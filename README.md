@@ -33,6 +33,11 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 - Dependencies listed in `requirements.txt`
 - A known Re4/Re4b/beta server compatible with the job file API calls
 
+### Important Notes
+
+- Must use the corresponding User Passcode that works with the server. You may find it after logging into the web page (e.g. https://beta.fslaser.com).
+- Must use the device Access Code showing on the touch screen. The generated `.lap` file would only work with the correct device.
+
 ### Installation
 
 1. Clone the repository:
