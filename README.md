@@ -75,8 +75,6 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "svg_file=@path/to/your/file.svg"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
 ```
 
----
-
 ### Process Raster Job (PNG)
 
 #### Endpoint: `/api/jobs/standard-png-lap`
@@ -100,8 +98,6 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "png_file=@path/to/your/image.png"   -F "json_file=@path/to/your/color_settings.json"   -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]"   --output generated_file.lap
 ```
-
----
 
 ### Process Paths (NPZ)
 
@@ -127,7 +123,6 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_cod
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   -F "color=#FF5733"   --output generated_file.lap
 ```
 
----
 
 ### Process Points (NPZ)
 
