@@ -50,7 +50,7 @@ def test_get_standard_paths2d_lap(server, pass_code, device_access_code, npz_fil
         print(f"An error occurred: {e}")
 import numpy as np
 
-def generate_star_vectors(box_min=10, box_max=50, num_points=5, file_path="test_vectors.npz"):
+def generate_star_vectors(box_min=10, box_max=50, num_points=5, file_path="test_paths.npz"):
     """
     Generate vectors for a star shape and save them in an .npz file.
 
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98"
     device_access_code = "Chastity:Lasso:87"
-    npz_file_path = "test_pathss.npz"  # Path to a sample NPZ file
+    npz_file_path = "test_paths.npz"  # Path to a sample NPZ file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     color = "#000000"  # Example color for the vector
     output_file_path = "output_npz_paths2d.lap"
