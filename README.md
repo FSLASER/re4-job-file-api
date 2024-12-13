@@ -61,7 +61,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 #### Endpoint: `/api/jobs/standard-svg-lap`
 
-**Description**: Processes an simple SVG file (contain paths only) into a `.lap` job file.
+**Description**: Processes an simple SVG file **(contain line and/or cubic bezier paths only)** into a `.lap` job file.
 
 **Method**: `POST`
 
