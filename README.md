@@ -153,6 +153,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
 ```
 
+> **Note**: The following three endpoints require you to add your device to the device list on the target API website and have the device connected to the website.
+
 ### Run LAP Job
 
 #### Endpoint: `/api/jobs/api-run-lap-job`
