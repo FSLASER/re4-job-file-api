@@ -1,4 +1,3 @@
-
 # Re4 Job File API
 
 The **Re4 Job File API** provides endpoints to process job files, including vector-based files (SVG/NPZ) and raster-based files (PNG/NPZ), for laser engravers. This repository is designed for developers to interact with the API and generate `.lap` files, which are used to execute jobs on compatible laser machines.
@@ -18,6 +17,9 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
    - [Process Raster Job (PNG)](#process-raster-job-png)
    - [Process Paths (NPZ)](#process-paths-npz)
    - [Process Points (NPZ)](#process-points-npz)
+   - [Run LAP Job](#run-lap-job)
+   - [Stop Job](#stop-job)
+   - [Query Job Status](#query-job-status)
 
 3. [Example Usage](#example-usage)
    - [Test Scripts](#test-scripts)
@@ -128,7 +130,6 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_cod
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   -F "color=#FF5733"   --output generated_file.lap
 ```
 
-
 ### Process Points (NPZ)
 
 #### Endpoint: `/api/jobs/standard-npz-points2d-lap`
@@ -152,6 +153,77 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
 ```
 
+> **Note**: The following three endpoints require you to add your device to the device list on the target API website and have the device connected to the website.
+
+### Run LAP Job
+
+#### Endpoint: `/api/jobs/api-run-lap-job`
+
+**Description**: Executes a `.lap` job file on the laser machine.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication.
+  - `device_access_code` (str): Device access code.
+- **Files**:
+  - `lap_file`: The `.lap` file to execute.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code" \
+  -F "lap_file=@path/to/your/job.lap"
+```
+
+### Stop Job
+
+#### Endpoint: `/api/jobs/api-stop-job`
+
+**Description**: Stops the currently running job on the laser machine.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication.
+  - `device_access_code` (str): Device access code.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code"
+```
+
+### Query Job Status
+
+#### Endpoint: `/api/jobs/api-query-job-status`
+
+**Description**: Retrieves the current status of the job running on the laser machine.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication.
+  - `device_access_code` (str): Device access code.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code"
+```
+
 ---
 
 ## Example Usage
@@ -164,6 +236,9 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
   - `standard_png.py`
   - `standard_npz_paths2d.py`
   - `standard_npz_points2d.py`
+  - `api_run_lap_job.py`
+  - `api_stop_job.py`
+  - `api_query_job_status.py`
 
 #### Running a Test Script
 
