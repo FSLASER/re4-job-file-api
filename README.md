@@ -161,6 +161,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 
 **Description**: Executes a `.lap` job file on the laser machine.
 
+⚠️ **IMPORTANT NOTE**: The LAP file must be generated using the same device ID as the target machine, otherwise the job will fail to run.
+
 **Method**: `POST`
 
 **Request Parameters**:
