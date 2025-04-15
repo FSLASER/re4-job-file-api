@@ -96,8 +96,8 @@ def generate_star_vectors(box_min=10, box_max=50, num_points=5, file_path="test_
 if __name__ == "__main__":
     # Define the server and input parameters
     server = "https://beta.fslaser.com"  # Replace with your server URL
-    pass_code = "Pork_Hacking_98"
-    device_access_code = "Chastity:Lasso:87"
+    pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
+    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
     npz_file_path = "test_paths.npz"  # Path to a sample NPZ file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     color = "#000000"  # Example color for the vector

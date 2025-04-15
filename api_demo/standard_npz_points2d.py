@@ -78,15 +78,14 @@ def generate_npz_from_png(png_file_path, npz_file_path):
 if __name__ == "__main__":
     # Define test parameters
     server = "https://beta.fslaser.com"  # Replace with your server URL
-    pass_code = "Pork_Hacking_98"
-    device_access_code = "Chastity:Lasso:87"
+    pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
+    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
     npz_file_path = "test_points.npz"  # Path to a sample .npz file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     output_file_path = "output_npz_points2d.lap"  # Path to save the LAP file
 
     png_file_path = "test.png"
     generate_npz_from_png(png_file_path, npz_file_path)
-
 
     # Run the test
     test_get_standard_points2d_lap(server, pass_code, device_access_code, npz_file_path, json_file_path, output_file_path)

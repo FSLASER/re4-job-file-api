@@ -34,7 +34,7 @@ def test_stop_job(server, pass_code, device_access_code):
 
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
-    pass_code = "Pork_Hacking_98"
-    device_access_code = "Chastity:Lasso:87"
+    pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
+    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
 
     test_stop_job(server, pass_code, device_access_code)

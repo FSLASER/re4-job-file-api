@@ -39,8 +39,8 @@ def test_run_lap_job(server, pass_code, device_access_code, lap_file_path):
 
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
-    pass_code = "Pork_Hacking_98"
-    device_access_code = "Chastity:Lasso:87"
-    lap_file_path = "C:/Users/Administrator/Desktop/test.lap"
+    pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
+    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    lap_file_path = "C:/Users/Administrator/Desktop/test.lap" #Path to the LAP file to be uploaded
 
     test_run_lap_job(server, pass_code, device_access_code, lap_file_path)

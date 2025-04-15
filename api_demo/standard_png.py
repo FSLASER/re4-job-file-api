@@ -50,8 +50,8 @@ def test_get_standard_png_lap(server, pass_code, device_access_code, png_file_pa
 if __name__ == "__main__":
     # Define test parameters
     server = "https://beta.fslaser.com"  # Replace with your server URL
-    pass_code = "Pork_Hacking_98"
-    device_access_code = "Chastity:Lasso:87"
+    pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
+    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
     png_file_path = "test.png"  # Path to a sample PNG file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     transform_params = [1.0, 0.0, 0.0, 1.0, 20.0, 15.25]  # Example transform parameters

@@ -35,10 +35,22 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 - Dependencies listed in `requirements.txt`
 - A known Re4/Re4b/beta server compatible with the job file API calls
 
-### Important Notes
+### Authentication Requirements
 
-- Must use the corresponding User Passcode that works with the server. You may find it after logging into the web page (e.g. https://beta.fslaser.com).
-- Must use the device Access Code showing on the touch screen. The generated `.lap` file would only work with the correct device.
+- **User Passcode**: Required for all API endpoints. This can be found under your username after logging into the web interface (e.g., https://beta.fslaser.com). Note that for different website you will get a different user passcode.
+- **Device Access Code**: Required for all API endpoints. This is displayed on the device's touchscreen and is unique to each machine.
+  - The device must be added to the device list on the target API website
+  - The device must be connected to the website
+  - The generated `.lap` file will only work with the correct device
+
+### File Requirements
+
+- **SVG Files**: Must contain only line and/or cubic bezier paths
+- **NPZ Files**:
+  - For vector data: Must contain a key named `paths`
+  - For raster data: Must contain a key named `points`
+- **Color Settings**: Required JSON file for all processing endpoints
+- **Output Files**: Generated `.lap` files will be saved to the specified output path
 
 ### Installation
 
@@ -70,8 +82,8 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
 - **Files**:
   - `svg_file`: The SVG file to process.
   - `json_file`: A JSON file containing color settings.
@@ -93,8 +105,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
   - `transform_params` (str): A JSON string with transformation parameters (`[sx, shx, shy, sy, tx, ty]`).
 - **Files**:
   - `png_file`: The PNG file to process.
@@ -117,8 +129,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_cod
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
   - `color` (str): Stroke color for the vector paths.
 - **Files**:
   - `npz_file`: The NPZ file containing vector paths.
@@ -141,8 +153,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
 - **Files**:
   - `npz_file`: The NPZ file containing vector paths.
   - `json_file`: A JSON file containing color settings.
@@ -168,8 +180,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
 - **Files**:
   - `lap_file`: The `.lap` file to execute.
 
@@ -193,8 +205,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
 
 **Example cURL**:
 
@@ -215,8 +227,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication.
-  - `device_access_code` (str): Device access code.
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
 
 **Example cURL**:
 
@@ -248,7 +260,10 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
 python api_demo/standard_svg.py
 ```
 
-Replace parameters like `pass_code`, `device_access_code`, and file paths in the scripts as needed.
+Before running any script, make sure to:
+1. Update the `pass_code` with your user passcode from the website
+2. Update the `device_access_code` with the code from your device's touchscreen
+3. Set the correct paths for input and output files
 
 ---
 
