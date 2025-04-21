@@ -107,7 +107,30 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_access_code` (str): Device access code obtained from device touchscreen.
-  - `transform_params` (str): A JSON string with transformation parameters (`[sx, shx, shy, sy, tx, ty]`).
+  - `transform_params` (str): A JSON string with transformation parameters (`[sx, shx, shy, sy, tx, ty]`) which operates in mm space.
+    - `sx`: Scale factor in the x-direction
+    - `shx`: Shear factor in the x-direction
+    - `shy`: Shear factor in the y-direction
+    - `sy`: Scale factor in the y-direction
+    - `tx`: Translation in the x-direction (in mm)
+    - `ty`: Translation in the y-direction (in mm)
+    These parameters form a 2D affine transformation matrix that transforms the input image coordinates to the desired output coordinates.
+
+    Common transformation examples:
+    - Scale to 0.1: `[0.1, 0, 0, 0.1, 0, 0]`
+    - Rotate 90 degrees clockwise: `[0, 1, -1, 0, 0, 0]`
+    - Rotate 180 degrees: `[-1, 0, 0, -1, 0, 0]`
+    - Rotate 270 degrees clockwise: `[0, -1, 1, 0, 0, 0]`
+    - Scale to 0.1 and rotate 90 degrees clockwise: `[0, 0.1, -0.1, 0, 0, 0]`
+    - Scale to 0.1 and translate by (20mm, 15.25mm): `[0.1, 0, 0, 0.1, 20.0, 15.25]`
+    - Mirror horizontally: `[-1, 0, 0, 1, 0, 0]`
+    - Mirror vertically: `[1, 0, 0, -1, 0, 0]`
+
+    Note: The transformation is applied in the order: scale → shear → rotate → translate.
+
+    For more detailed technical information about affine transformations, see:
+    - [MathWorks documentation](https://www.mathworks.com/discovery/affine-transformation.html)
+    - [Apache Sedona documentation](https://sedona.apache.org/1.6.1/api/sql/Raster-affine-transformation/)
 - **Files**:
   - `png_file`: The PNG file to process.
   - `json_file`: A JSON file containing color settings.
