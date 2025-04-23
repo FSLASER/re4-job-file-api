@@ -70,6 +70,8 @@ def generate_npz_from_png(png_file_path, npz_file_path):
         # Convert to (x, y) format (argwhere gives (row, col))
         points = black_pixel_positions[:, [1, 0]]  # Swap columns to get (x, y)
 
+        # Scale down the points by 96
+        points = points / 96.0
         # Save the points to an .npz file
         np.savez(npz_file_path, points=points)  #set attribute name to "points"
         print(f"Generated .npz file with {len(points)} points at '{npz_file_path}'")

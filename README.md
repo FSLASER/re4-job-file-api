@@ -125,6 +125,14 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
     - Scale to 0.1 and translate by (20mm, 15.25mm): `[0.1, 0, 0, 0.1, 20.0, 15.25]`
     - Mirror horizontally: `[-1, 0, 0, 1, 0, 0]`
     - Mirror vertically: `[1, 0, 0, -1, 0, 0]`
+    - Scale to 0.1 and mirror horizontally: `[-0.1, 0, 0, 0.1, 0, 0]`
+    - Scale to 0.1 and mirror vertically: `[0.1, 0, 0, -0.1, 0, 0]`
+    - Scale to 0.1 and rotate 45 degrees clockwise: `[0.0707, 0.0707, -0.0707, 0.0707, 0, 0]`
+    - Scale to 0.1 and rotate 45 degrees counter-clockwise: `[0.0707, -0.0707, 0.0707, 0.0707, 0, 0]`
+    - Scale to 0.1 and shear horizontally by 0.5: `[0.1, 0.05, 0, 0.1, 0, 0]`
+    - Scale to 0.1 and shear vertically by 0.5: `[0.1, 0, 0.05, 0.1, 0, 0]`
+    - Scale to 0.1 and rotate 90 degrees clockwise and translate by (20mm, 15.25mm): `[0, 0.1, -0.1, 0, 20.0, 15.25]`
+    - Scale to 0.1 and rotate 45 degrees clockwise and translate by (20mm, 15.25mm): `[0.0707, 0.0707, -0.0707, 0.0707, 20.0, 15.25]`
 
     Note: The transformation is applied in the order: scale → shear → rotate → translate.
 
@@ -267,7 +275,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
 
 ### Test Scripts
 
-- Clone the repository and navigate to the `api_demo` folder.
+- Clone the repository and test scripts are in root folder.
 - Example scripts are available for each endpoint:
   - `standard_svg.py`
   - `standard_png.py`
@@ -280,7 +288,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
 #### Running a Test Script
 
 ```bash
-python api_demo/standard_svg.py
+python standard_svg.py
 ```
 
 Before running any script, make sure to:

@@ -54,7 +54,7 @@ if __name__ == "__main__":
     device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
     png_file_path = "test.png"  # Path to a sample PNG file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
-    transform_params = [1.0, 0.0, 0.0, 1.0, 20.0, 15.25]  # Example transform parameters
+    transform_params = [0.1, 0.0, 0.0, 0.1, 20.0, 15.25]  # Example transform parameters
     output_file_path = "output_standard_png.lap"  # Path to save the LAP file
 
     # Run the test
