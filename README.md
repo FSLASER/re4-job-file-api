@@ -149,6 +149,37 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "png_file=@path/to/your/image.png"   -F "json_file=@path/to/your/color_settings.json"   -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]"   --output generated_file.lap
 ```
 
+**NOTE**:
+Transform matrix is laid out like this:
+
+```text
+[scaleX, shearY, translationX]
+[shearX, scaleY, translationY]
+[     0,      0,            1]
+```
+
+Local origin of the image is at its top-left corner. Device coordinates start at 0,0 with X increasing towards the right and Y increasing towards the top.
+
+To rotate an image and center it:
+
+ - θ: The angle of the image
+ - W: The width of the image, in mm
+ - H: The height of the image, in mm
+
+Multiply these matrices R * T (order is important!):
+```text
+          R                 T
+[cos(θ)  -sin(θ)  0] · [1  0  -W/2]
+[sin(θ)   cos(θ)  0]   [0  1   H/2]
+[0        0       1]   [0  0   1  ]
+```
+
+Extract the resulting matrix into an array to use as `transform_params`:
+
+```text
+[scaleX, shearX, shearY, translationX, translationY]
+```
+
 ### Process Paths (NPZ)
 
 #### Endpoint: `/api/jobs/standard-npz-paths2d-lap`
