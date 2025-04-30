@@ -107,10 +107,10 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_access_code` (str): Device access code obtained from device touchscreen.
-  - `transform_params` (str): A JSON string with transformation parameters (`[sx, shx, shy, sy, tx, ty]`) which operates in mm space.
+  - `transform_params` (str): A JSON string with transformation parameters (`[sx, shy, shx, sy, tx, ty]`) which operates in mm space.
     - `sx`: Scale factor in the x-direction
-    - `shx`: Shear factor in the x-direction
     - `shy`: Shear factor in the y-direction
+    - `shx`: Shear factor in the x-direction
     - `sy`: Scale factor in the y-direction
     - `tx`: Translation in the x-direction (in mm)
     - `ty`: Translation in the y-direction (in mm)
