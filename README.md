@@ -153,8 +153,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_cod
 Transform matrix is laid out like this:
 
 ```text
-[scaleX, shearY, translationX]
-[shearX, scaleY, translationY]
+[scaleX, shearX, translationX]
+[shearY, scaleY, translationY]
 [     0,      0,            1]
 ```
 
@@ -177,7 +177,7 @@ Multiply these matrices R * T (order is important!):
 Extract the resulting matrix into an array to use as `transform_params`:
 
 ```text
-[scaleX, shearX, shearY, translationX, translationY]
+[scaleX, shearY, shearX, translationX, translationY]
 ```
 
 ### Process Paths (NPZ)

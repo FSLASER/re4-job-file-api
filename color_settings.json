@@ -1,10 +1,10 @@
 {
   "version": "2",
   "global": {
-    "jobType": "Rotary",
-    "jobPasses": 2,
+    "jobType": "Default",
+    "jobPasses": 1,
     "vectorWobbleDiameterReduction_mm": 0.1,
-    "isCleanupPassEnabled": true,
+    "isCleanupPassEnabled": false,
     "cleanupPassKey": "#ffffff",
     "gantryMove": {
       "isEnabled": false,
@@ -17,48 +17,7 @@
     "isRotaryAdvanceEnabled": false,
     "rotaryAdvanceCount": 1,
     "isEndJobCncReturnEnabled": true,
-    "markers": [
-      [
-        19.895916793014276,
-        -21.759846588258593
-      ],
-      [
-        37.9155013512661,
-        -20.23871282684771
-      ],
-      [
-        30.87720321729958,
-        -6.516352584388185
-      ],
-      [
-        28.239742774261607,
-        -9.718983122362863
-      ],
-      [
-        22.211261761603385,
-        -11.60288343881856
-      ],
-      [
-        34.74616402459178,
-        21.95990054838576
-      ],
-      [
-        35.233375847949986,
-        18.113216958910296
-      ],
-      [
-        34.19275812125988,
-        19.707153280762707
-      ],
-      [
-        39.95545604740867,
-        23.174834216652282
-      ],
-      [
-        40.74142222764586,
-        24.627297531764324
-      ]
-    ]
+    "markers": []
   },
   "salsa": {
     "cncDefaultG01FeedRate": 200,
@@ -66,17 +25,31 @@
     "cncYStepsPerMm": 46,
     "xy2MoveSettleDelay_us": 400,
     "xy2SpeedRapidMove_mms": 2000,
-    "xy2PolygonMoveSettleDelay_us": "32"
+    "xy2PolygonMoveSettleDelay_us": 400
   },
   "linearRail": {
     "activeAxis": "x",
     "x": {
       "isReversed": false,
-      "perpendicularCorrectionRatio": "0.25"
+      "perpendicularCorrectionRatio": 1,
+      "guidelines_mm": [
+        -100,
+        -50,
+        0,
+        50,
+        100
+      ]
     },
     "y": {
       "isReversed": false,
-      "perpendicularCorrectionRatio": 1
+      "perpendicularCorrectionRatio": 1,
+      "guidelines_mm": [
+        -100,
+        -50,
+        0,
+        50,
+        100
+      ]
     }
   },
   "rotary": {
@@ -86,12 +59,12 @@
     "stepsPerMm": 46.3,
     "stepsPerRevolution": 9600,
     "rotaryPositionNearChuck_mm": [
-      37.9155013512661,
-      -20.23871282684771
+      -5,
+      0
     ],
     "rotaryPositionFarChuck_mm": [
-      19.895916793014276,
-      -21.759846588258593
+      5,
+      0
     ]
   },
   "focusJob": {
@@ -106,53 +79,53 @@
   "parameterTest": {
     "xAxisParameter": "power_percent",
     "yAxisParameter": "speed_mms",
-    "squareSize_mm": 0,
-    "squareSpacing_mm": 0,
-    "numberRows": 0,
-    "numberColumns": 0,
+    "squareSize_mm": 3,
+    "squareSpacing_mm": 4,
+    "numberRows": 7,
+    "numberColumns": 7,
     "parameters": {
       "power_percent": {
-        "label": "power_percent",
-        "value": 0,
+        "label": "Power (%)",
+        "value": 50,
         "min": 0,
-        "max": 0
+        "max": 100
       },
       "speed_mms": {
-        "label": "speed_mms",
-        "value": 0,
-        "min": 0,
-        "max": 0
+        "label": "Speed (mm/s)",
+        "value": 1000,
+        "min": 500,
+        "max": 2000
       },
       "frequency_kHz": {
-        "label": "frequency_kHz",
-        "value": 0,
-        "min": 0,
-        "max": 0
+        "label": "Frequency (kHz)",
+        "value": 60,
+        "min": 45,
+        "max": 1000
       },
       "pulseWidth_ns": {
-        "label": "pulseWidth_ns",
-        "value": 0,
-        "min": 0,
-        "max": 0
+        "label": "Pulse Width (ns)",
+        "value": 20,
+        "min": 2,
+        "max": 200
       },
       "lineSpacing_mm": {
-        "label": "lineSpacing_mm",
-        "value": 0,
-        "min": 0,
-        "max": 0
+        "label": "Line Spacing (mm)",
+        "value": 0.1,
+        "min": 0.05,
+        "max": 0.25
       }
     }
   },
   "raster": {
-    "isRasterOptimized": true,
+    "isRasterOptimized": false,
     "isDepthMap": false,
-    "passes": "10",
+    "passes": 1,
     "dpi": "100",
     "power_percent": 20,
     "speed_mms": 1000,
     "frequency_kHz": 67,
     "pulseWidth_ns": 500,
-    "pulseDuration_us": "1000",
+    "pulseDuration_us": 120,
     "dither": 3,
     "threshold": 225,
     "isSingleDirectionRaster": false,
@@ -168,250 +141,12 @@
       "isEnabled": false,
       "z_mm": 0
     },
-    "layer_depth_mm": 2,
-    "increment_angle_deg": 25,
-    "cleanup_type": "full"
+    "layer_depth_mm": 0.01,
+    "increment_angle_deg": 90,
+    "cleanup_type": "repetition"
   },
   "vector": {
     "isVectorOptimized": false,
-    "#BE0032": {
-      "order": 6,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#BE0032"
-    },
-    "#F3C300": {
-      "order": 2,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#F3C300"
-    },
-    "#F38400": {
-      "order": 4,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#F38400"
-    },
-    "#E68FAC": {
-      "order": 10,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#E68FAC"
-    },
-    "#E25822": {
-      "order": 20,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#E25822"
-    },
-    "#FFFF00": {
-      "order": 27,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#FFFF00"
-    },
-    "#0067A5": {
-      "order": 11,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#0067A5"
-    },
     "#A1CAF1": {
       "order": 5,
       "colorPasses": 1,
@@ -420,11 +155,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -446,19 +181,19 @@
       },
       "alias": "#A1CAF1"
     },
-    "#FFFFFF": {
-      "order": 23,
+    "#BE0032": {
+      "order": 6,
       "colorPasses": 1,
       "speed_mms": 300,
       "power_percent": 20,
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -478,7 +213,313 @@
         "isEnabled": false,
         "z_mm": 0
       },
-      "alias": "#FFFFFF"
+      "alias": "#BE0032"
+    },
+    "#882D17": {
+      "order": 17,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#882D17"
+    },
+    "#0067A5": {
+      "order": 11,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#0067A5"
+    },
+    "#F6A600": {
+      "order": 14,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#F6A600"
+    },
+    "#FFFF00": {
+      "order": 27,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#FFFF00"
+    },
+    "#604E97": {
+      "order": 13,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#604E97"
+    },
+    "#F99379": {
+      "order": 12,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#F99379"
+    },
+    "#2B3D26": {
+      "order": 21,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#2B3D26"
+    },
+    "#00FFFF": {
+      "order": 29,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#00FFFF"
+    },
+    "#DCD300": {
+      "order": 16,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#DCD300"
     },
     "#FF0000": {
       "order": 24,
@@ -488,11 +529,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -522,11 +563,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -548,19 +589,19 @@
       },
       "alias": "#008856"
     },
-    "#604E97": {
-      "order": 13,
+    "#FFFFFF": {
+      "order": 23,
       "colorPasses": 1,
       "speed_mms": 300,
       "power_percent": 20,
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -580,21 +621,21 @@
         "isEnabled": false,
         "z_mm": 0
       },
-      "alias": "#604E97"
+      "alias": "#FFFFFF"
     },
-    "#FF00FF": {
-      "order": 28,
+    "#F3C300": {
+      "order": 2,
       "colorPasses": 1,
       "speed_mms": 300,
       "power_percent": 20,
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -614,7 +655,7 @@
         "isEnabled": false,
         "z_mm": 0
       },
-      "alias": "#FF00FF"
+      "alias": "#F3C300"
     },
     "#000000": {
       "order": 22,
@@ -624,11 +665,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -650,210 +691,6 @@
       },
       "alias": "#000000"
     },
-    "#882D17": {
-      "order": 17,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#882D17"
-    },
-    "#DCD300": {
-      "order": 16,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#DCD300"
-    },
-    "#F6A600": {
-      "order": 14,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#F6A600"
-    },
-    "#00FF00": {
-      "order": 25,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#00FF00"
-    },
-    "#8DB600": {
-      "order": 18,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#8DB600"
-    },
-    "#848482": {
-      "order": 8,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#848482"
-    },
     "#875692": {
       "order": 3,
       "colorPasses": 1,
@@ -862,11 +699,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -888,108 +725,6 @@
       },
       "alias": "#875692"
     },
-    "#2B3D26": {
-      "order": 21,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#2B3D26"
-    },
-    "#B3446C": {
-      "order": 15,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#B3446C"
-    },
-    "#F99379": {
-      "order": 12,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
-        "infill_type": "none",
-        "spacing_mm": 0,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": false,
-        "isSkipOutline": false
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#F99379"
-    },
     "#C2B280": {
       "order": 7,
       "colorPasses": 1,
@@ -998,11 +733,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -1024,6 +759,244 @@
       },
       "alias": "#C2B280"
     },
+    "#E25822": {
+      "order": 20,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#E25822"
+    },
+    "#222222": {
+      "order": 1,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#222222"
+    },
+    "#00FF00": {
+      "order": 25,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#00FF00"
+    },
+    "#FF00FF": {
+      "order": 28,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#FF00FF"
+    },
+    "#F38400": {
+      "order": 4,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#F38400"
+    },
+    "#654522": {
+      "order": 19,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#654522"
+    },
+    "#E68FAC": {
+      "order": 10,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#E68FAC"
+    },
     "#0000FF": {
       "order": 26,
       "colorPasses": 1,
@@ -1032,11 +1005,11 @@
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -1058,53 +1031,19 @@
       },
       "alias": "#0000FF"
     },
-    "#222222": {
-      "order": 1,
+    "#848482": {
+      "order": 8,
       "colorPasses": 1,
       "speed_mms": 300,
-      "power_percent": 25,
+      "power_percent": 20,
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
         "num_layers": 1,
-        "infill_type": "line",
-        "spacing_mm": 1,
-        "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
-        "is_single_direction": true,
-        "isSkipOutline": true
-      },
-      "wobble": {
-        "isEnabled": false,
-        "diameter_mm": 1,
-        "spacing_mm": 0.1
-      },
-      "gantryMove": {
-        "isEnabled": false,
-        "isRelative": true,
-        "x_mm": 0,
-        "y_mm": 0,
-        "z_mm": 0
-      },
-      "galvoMove": {
-        "isEnabled": false,
-        "z_mm": 0
-      },
-      "alias": "#222222"
-    },
-    "#00FFFF": {
-      "order": 29,
-      "colorPasses": 1,
-      "speed_mms": 300,
-      "power_percent": 20,
-      "frequency_kHz": 67,
-      "pulseWidth_ns": 500,
-      "infill": {
-        "num_layers": 0,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -1124,21 +1063,21 @@
         "isEnabled": false,
         "z_mm": 0
       },
-      "alias": "#00FFFF"
+      "alias": "#848482"
     },
-    "#654522": {
-      "order": 19,
+    "#8DB600": {
+      "order": 18,
       "colorPasses": 1,
       "speed_mms": 300,
       "power_percent": 20,
       "frequency_kHz": 67,
       "pulseWidth_ns": 500,
       "infill": {
-        "num_layers": 0,
+        "num_layers": 1,
         "infill_type": "none",
-        "spacing_mm": 0,
+        "spacing_mm": 0.05,
         "inital_angle_deg": 0,
-        "increment_angle_deg": 0,
+        "increment_angle_deg": 90,
         "is_single_direction": false,
         "isSkipOutline": false
       },
@@ -1158,7 +1097,41 @@
         "isEnabled": false,
         "z_mm": 0
       },
-      "alias": "#654522"
+      "alias": "#8DB600"
+    },
+    "#B3446C": {
+      "order": 15,
+      "colorPasses": 1,
+      "speed_mms": 300,
+      "power_percent": 20,
+      "frequency_kHz": 67,
+      "pulseWidth_ns": 500,
+      "infill": {
+        "num_layers": 1,
+        "infill_type": "none",
+        "spacing_mm": 0.05,
+        "inital_angle_deg": 0,
+        "increment_angle_deg": 90,
+        "is_single_direction": false,
+        "isSkipOutline": false
+      },
+      "wobble": {
+        "isEnabled": false,
+        "diameter_mm": 1,
+        "spacing_mm": 0.1
+      },
+      "gantryMove": {
+        "isEnabled": false,
+        "isRelative": true,
+        "x_mm": 0,
+        "y_mm": 0,
+        "z_mm": 0
+      },
+      "galvoMove": {
+        "isEnabled": false,
+        "z_mm": 0
+      },
+      "alias": "#B3446C"
     }
   }
 }
