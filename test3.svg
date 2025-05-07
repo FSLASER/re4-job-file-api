@@ -1,0 +1,6 @@
+<svg width="320" height="490" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="100" x="10" y="10" style="fill:None;stroke-width:3;stroke:red" />
+  <polygon points="150,115 258,177 258,302 150,365 42,302 42,177" style="fill:lime;stroke:purple;stroke-width:3" />
+  <text x="65" y="65" fill="pink" stroke="blue" font-size="35">I love SVG!</text>
+  Sorry, your browser does not support inline SVG.  
+</svg>
