@@ -116,29 +116,6 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
     - `ty`: Translation in the y-direction (in mm)
     These parameters form a 2D affine transformation matrix that transforms the input image coordinates to the desired output coordinates.
 
-    Common transformation examples:
-    - Scale to 0.1: `[0.1, 0, 0, 0.1, 0, 0]`
-    - Rotate 90 degrees clockwise: `[0, 1, -1, 0, 0, 0]`
-    - Rotate 180 degrees: `[-1, 0, 0, -1, 0, 0]`
-    - Rotate 270 degrees clockwise: `[0, -1, 1, 0, 0, 0]`
-    - Scale to 0.1 and rotate 90 degrees clockwise: `[0, 0.1, -0.1, 0, 0, 0]`
-    - Scale to 0.1 and translate by (20mm, 15.25mm): `[0.1, 0, 0, 0.1, 20.0, 15.25]`
-    - Mirror horizontally: `[-1, 0, 0, 1, 0, 0]`
-    - Mirror vertically: `[1, 0, 0, -1, 0, 0]`
-    - Scale to 0.1 and mirror horizontally: `[-0.1, 0, 0, 0.1, 0, 0]`
-    - Scale to 0.1 and mirror vertically: `[0.1, 0, 0, -0.1, 0, 0]`
-    - Scale to 0.1 and rotate 45 degrees clockwise: `[0.0707, 0.0707, -0.0707, 0.0707, 0, 0]`
-    - Scale to 0.1 and rotate 45 degrees counter-clockwise: `[0.0707, -0.0707, 0.0707, 0.0707, 0, 0]`
-    - Scale to 0.1 and shear horizontally by 0.5: `[0.1, 0.05, 0, 0.1, 0, 0]`
-    - Scale to 0.1 and shear vertically by 0.5: `[0.1, 0, 0.05, 0.1, 0, 0]`
-    - Scale to 0.1 and rotate 90 degrees clockwise and translate by (20mm, 15.25mm): `[0, 0.1, -0.1, 0, 20.0, 15.25]`
-    - Scale to 0.1 and rotate 45 degrees clockwise and translate by (20mm, 15.25mm): `[0.0707, 0.0707, -0.0707, 0.0707, 20.0, 15.25]`
-
-    Note: The transformation is applied in the order: scale → shear → rotate → translate.
-
-    For more detailed technical information about affine transformations, see:
-    - [MathWorks documentation](https://www.mathworks.com/discovery/affine-transformation.html)
-    - [Apache Sedona documentation](https://sedona.apache.org/1.6.1/api/sql/Raster-affine-transformation/)
 - **Files**:
   - `png_file`: The PNG file to process.
   - `json_file`: A JSON file containing color settings.
@@ -180,6 +157,53 @@ Extract the resulting matrix into an array to use as `transform_params`:
 [scaleX, shearY, shearX, translationX, translationY]
 ```
 
+Common transformation examples:
+- Scale to 0.1: `[0.1, 0, 0, 0.1, 0, 0]`
+- Rotate 90 degrees clockwise: `[0, 1, -1, 0, 0, 0]`
+- Rotate 180 degrees: `[-1, 0, 0, -1, 0, 0]`
+- Rotate 270 degrees clockwise: `[0, -1, 1, 0, 0, 0]`
+- Scale to 0.1 and rotate 90 degrees clockwise: `[0, 0.1, -0.1, 0, 0, 0]`
+- Scale to 0.1 and translate by (20mm, 15.25mm): `[0.1, 0, 0, 0.1, 20.0, 15.25]`
+- Mirror horizontally: `[-1, 0, 0, 1, 0, 0]`
+- Mirror vertically: `[1, 0, 0, -1, 0, 0]`
+- Scale to 0.1 and rotate 45 degrees clockwise: `[0.0707, 0.0707, -0.0707, 0.0707, 0, 0]`
+- Scale to 0.1 and rotate 45 degrees counter-clockwise: `[0.0707, -0.0707, 0.0707, 0.0707, 0, 0]`
+- Scale to 0.1 and rotate 90 degrees clockwise and translate by (20mm, 15.25mm): `[0, 0.1, -0.1, 0, 20.0, 15.25]`
+- Scale to 0.1 and rotate 45 degrees clockwise and translate by (20mm, 15.25mm): `[0.0707, 0.0707, -0.0707, 0.0707, 20.0, 15.25]`
+
+Note: The transformation is applied in the order: scale → shear → rotate → translate.
+
+For more detailed technical information about affine transformations, see:
+- [MathWorks documentation](https://www.mathworks.com/discovery/affine-transformation.html)
+- [Apache Sedona documentation](https://sedona.apache.org/1.6.1/api/sql/Raster-affine-transformation/)
+
+
+**DPI and Scaling**:
+The API assumes all input images are at 96 DPI (dots per inch) when converting to millimeters. This is important for calculating the correct scale factor:
+
+1. **Base DPI**: All images are treated as 96 DPI when converting to millimeters
+2. **Scaling Calculation**:
+   - Convert desired output size from millimeters to inches
+   - Calculate required pixels at 96 DPI
+   - Divide by original image dimensions to get scale factor
+   - Example: For 99.82mm × 236.56mm output:
+     - Convert to inches: 3.93" × 9.31"
+     - At 96 DPI: 377.28 × 894.08 pixels needed
+     - If input is 1179 × 2794 pixels
+     - Scale factor = 377.28/1179 = 0.32
+
+3. **Two Approaches to Handle Scaling**:
+   a. **Using Transform Matrix (Recommended)**:
+      - Use transform: `[0.32, 0, 0, 0.32, 0, 0]`
+      - Preserves original image resolution
+      - Backend uses full resolution for better quality
+      - More flexible for combining with other transformations
+   
+   b. **Pre-scaling the Image**:
+      - Resize your image to the target pixel dimensions (e.g., 377×894 pixels)
+      - Simpler but may reduce quality if original image is higher resolution
+      - Less flexible for combining with other transformations
+      
 ### Process Paths (NPZ)
 
 #### Endpoint: `/api/jobs/standard-npz-paths2d-lap`
