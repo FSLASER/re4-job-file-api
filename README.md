@@ -20,6 +20,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
    - [Run LAP Job](#run-lap-job)
    - [Stop Job](#stop-job)
    - [Query Job Status](#query-job-status)
+   - [Camera Capture](#capture-image)
 
 3. [Example Usage](#example-usage)
    - [Test Scripts](#test-scripts)
@@ -300,6 +301,54 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
   -F "device_access_code=my-device-access-code"
 ```
 
+### Capture Image
+
+Captures an image from the specified device.
+
+**Endpoint:** `/api/jobs/capture-image`
+
+**Method:** `POST`
+
+**Request Body:**
+
+The request should be `multipart/form-data` and include the following fields:
+
+*   `device_access_code` (string, required): The access code for the device. (Implicitly required by `get_validated_device_info` dependency)
+*    `pass_code` (string, required): The pass code for the device. (Implicitly required by `get_validated_device_info` dependency)
+*   `is_corrected` (boolean, optional): Specifies whether the captured image should be corrected. If `true`, the corrected image is returned. Otherwise, the original image is returned. Defaults to `false` if not specified.
+
+**Responses:**
+
+*   **`200 OK`**:
+    *   Content-Type: `image/jpeg`
+    *   Body: The raw image bytes.
+*   **`400 Bad Request` (or other error codes from `validate_device`)**:
+    *   Content-Type: `application/json`
+    *   Body: JSON object describing the validation error.
+    ```json
+    {
+        "message": "Error message detailing validation failure"
+    }
+    ```
+*   **`500 Internal Server Error`**:
+    *   Content-Type: `application/json`
+    *   Body: JSON object describing the error.
+    ```json
+    {
+        "message": "Failed to capture image"
+    }
+    ```
+
+**Example Curl:**
+
+```bash
+curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
+     -F "pass_code=your_pass_code" \
+     -F "device_access_code=your_device_access_code" \
+     -F "is_corrected=true" \
+     --output captured_image.jpg
+```
+
 ---
 
 ## Example Usage
@@ -315,6 +364,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
   - `api_run_lap_job.py`
   - `api_stop_job.py`
   - `api_query_job_status.py`
+  - `api_capture_image.py`
 
 #### Running a Test Script
 
