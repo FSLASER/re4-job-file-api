@@ -21,6 +21,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
    - [Stop Job](#stop-job)
    - [Query Job Status](#query-job-status)
    - [Camera Capture](#capture-image)
+   - [Gantry Move](#gantry-move)
 
 3. [Example Usage](#example-usage)
    - [Test Scripts](#test-scripts)
