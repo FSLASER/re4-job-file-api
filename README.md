@@ -292,8 +292,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
-  - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
 
 **Example cURL**:
 
@@ -314,8 +314,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
 **Request Parameters**:
 
 - **Form Fields**:
-  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
-  - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
 
 **Example cURL**:
 
@@ -337,9 +337,9 @@ Captures an image from the specified device.
 
 The request should be `multipart/form-data` and include the following fields:
 
-*   `device_access_code` (string, required): The access code for the device. (Implicitly required by `get_validated_device_info` dependency)
-*    `pass_code` (string, required): The pass code for the device. (Implicitly required by `get_validated_device_info` dependency)
-*   `is_corrected` (boolean, optional): Specifies whether the captured image should be corrected. If `true`, the corrected image is returned. Otherwise, the original image is returned. Defaults to `false` if not specified.
+  *   `device_access_code` (string, required): The access code for the device.
+  * `pass_code` (string, required): The user's pass code.
+  *   `is_corrected` (boolean, optional): Specifies whether the captured image should be corrected. If `true`, the corrected image is returned. Otherwise, the original image is returned. Defaults to `false` if not specified.
 
 **Responses:**
 
@@ -375,7 +375,59 @@ curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
 
 ---
 
-## Example Usage
+### Gantry Move
+
+#### Endpoint: `/api/jobs/gantry-move`
+
+**Description:** Moves the gantry of a device to a specified position along the X, Y, and/or Z axes (in millimeters).
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
+  - `x_mm` (float, optional): X position in millimeters. Can be `null` to skip moving along X.
+  - `y_mm` (float, optional): Y position in millimeters. Can be `null` to skip moving along Y.
+  - `z_mm` (float, optional): Z position in millimeters. Can be `null` to skip moving along Z.
+
+> **Note:** At least one of `x_mm`, `y_mm`, or `z_mm` must be provided (not `null`). If a value is `null`, the gantry will not move along that axis.
+
+This endpoint allows you to move the gantry of a device to a specific position. If you do not wish to move along a particular axis, set its value to `null` or omit it. The endpoint requires a valid device access code for authentication and device selection.
+
+### Example cURL
+
+```sh
+curl -X POST "https://your-server/api/jobs/gantry-move" \
+  -F "x_mm=100.0" \
+  -F "y_mm=50.0" \
+  -F "z_mm=" \
+  -F "device_access_code=YOUR_DEVICE_ACCESS_CODE"
+```
+
+### Success Response
+
+- **Status:** `200 OK`
+- **Body:**
+  ```json
+  {
+    "message": "Gantry moved successfully"
+  }
+  ```
+
+### Error Responses
+
+- **Status:** `500 Internal Server Error`
+  ```json
+  {
+    "message": "An unexpected error occurred while moving the gantry."
+  }
+  ```
+- **Status:** `4xx/5xx` (validation or device errors)
+  - Returns a JSON error message describing the issue.
+
+---
 
 ### Test Scripts
 
