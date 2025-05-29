@@ -7,7 +7,9 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 - Process 2D vector files (`.svg`, `.npz`) and raster files (`.png`, `.npz`) into `.lap` job files.
 - Support for various transformation parameters (scaling, Shearing, translation, etc.).
 - API endpoints to validate and process user inputs.
-- Easy integration with laser machine configurations.
+- Easy integration with laser machine configurations
+- Image capture from Laser Camera supported by API
+- Move CNC gantry XYZ supported by API
 
 ## Table of Contents
 
