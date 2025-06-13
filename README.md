@@ -19,6 +19,8 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
    - [Process Raster Job (PNG)](#process-raster-job-png)
    - [Process Paths (NPZ)](#process-paths-npz)
    - [Process Points (NPZ)](#process-points-npz)
+   - [Process GVDesign Job](#process-gvdesign-job)
+   - [Process PDF Job](#process-pdf-job)
    - [Run LAP Job](#run-lap-job)
    - [Stop Job](#stop-job)
    - [Query Job Status](#query-job-status)
@@ -75,11 +77,11 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 ## Endpoints
 
-### Process Simple Vector Job (SVG)
+### Process Vector Job (SVG)
 
 #### Endpoint: `/api/jobs/standard-svg-lap`
 
-**Description**: Processes an simple SVG file **(contain line and/or cubic bezier paths only)** into a `.lap` job file.
+**Description**: Processes an SVG file **(contain vector paths only, endpoint will ignore raster data)** into a `.lap` job file.
 
 **Method**: `POST`
 
@@ -253,6 +255,52 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+```
+
+### Process GVDesign Job
+
+#### Endpoint: `/api/jobs/standard-gvdesign-lap`
+
+**Description**: Processes a GVDesign file into a `.lap` job file.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
+- **Files**:
+  - `gvdesign_file`: The GVDesign file to process.
+  - `json_file`: A JSON file containing color settings.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "gvdesign_file=@path/to/your/file.gvdesign"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+```
+
+### Process PDF Job
+
+#### Endpoint: `/api/jobs/standard-pdf-lap`
+
+**Description**: Processes a PDF file into a `.lap` job file.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
+- **Files**:
+  - `pdf_file`: The PDF file to process.
+  - `json_file`: A JSON file containing color settings.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "pdf_file=@path/to/your/file.pdf"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
 ```
 
 > **Note**: The following three endpoints require you to add your device to the device list on the target API website and have the device connected to the website.
@@ -440,6 +488,8 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
   - `standard_png.py`
   - `standard_npz_paths2d.py`
   - `standard_npz_points2d.py`
+  - `standard_gvdesign.py`
+  - `standard_pdf.py`
   - `api_run_lap_job.py`
   - `api_stop_job.py`
   - `api_query_job_status.py`
