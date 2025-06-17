@@ -16,7 +16,9 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 1. [Getting Started](#getting-started)
 2. [Endpoints](#endpoints)
    - [Process Vector Job (SVG)](#process-vector-job-svg)
+   - [Process 3D Projected Vector Job (SVG)](#process-3d-projected-vector-job-svg)
    - [Process Raster Job (PNG)](#process-raster-job-png)
+   - [Process 3D Projected Raster Job (PNG)](#process-3d-projected-raster-job-png)
    - [Process Paths (NPZ)](#process-paths-npz)
    - [Process Points (NPZ)](#process-points-npz)
    - [Process GVDesign Job](#process-gvdesign-job)
@@ -98,6 +100,32 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "svg_file=@path/to/your/file.svg"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+```
+
+### Process 3D Projected Vector Job (SVG)
+
+#### Endpoint: `/api/jobs/project3d-svg-lap`
+
+**Description**: Processes an SVG file **(contain vector paths only, endpoint will ignore raster data)** and wraps it onto a 3D mesh surface to create a `.lap` job file.
+
+⚠️ **Warning**: This endpoint will produce an empty LAP file result if you do not own a 3D galvo laser.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
+- **Files**:
+  - `svg_file`: The SVG file to process.
+  - `json_file`: A JSON file containing color settings.
+  - `mesh_file`: A 3D mesh file (e.g., .obj) onto which the SVG will be projected.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "svg_file=@path/to/your/file.svg"   -F "json_file=@path/to/your/color_settings.json"   -F "mesh_file=@path/to/your/mesh.obj"   --output generated_file.lap
 ```
 
 ### Process Raster Job (PNG)
@@ -210,6 +238,40 @@ The API assumes all input images are at 96 DPI (dots per inch) when converting t
       - Simpler but may reduce quality if original image is higher resolution
       - Less flexible for combining with other transformations
       
+### Process 3D Projected Raster Job (PNG)
+
+#### Endpoint: `/api/jobs/project3d-png-lap`
+
+**Description**: Processes a PNG file with transformation parameters and wraps it onto a 3D mesh surface to create a `.lap` job file.
+
+**Notes**:
+This endpoint follows the same PNG transformation, DPI and scaling instructions as the [Process Raster Job (PNG)](#process-raster-job-png) endpoint above. Please refer to that section for detailed information about:
+- Base 96 DPI assumptions
+- Scaling calculations
+- Transform matrix vs. pre-scaling approaches
+
+⚠️ **Warning**: This endpoint works for 3D galvo laser. It will produce lap result with your PNG if you have a 2D galvo laser, but it will result in moving the laser head in Z gantry direction when traveling through the vertical layers of the job.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): User pass code for authentication obtained from the API website under username.
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `transform_params` (str): A JSON string with transformation parameters (`[sx, shy, shx, sy, tx, ty]`) which operates in mm space. These parameters follow the same format and transformation matrix layout as described in the [Process Raster Job (PNG)](#process-raster-job-png) section.
+
+- **Files**:
+  - `png_file`: The PNG file to process.
+  - `json_file`: A JSON file containing color settings.
+  - `mesh_file`: A 3D mesh file (e.g., .obj) onto which the PNG will be projected.
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/project3d-png-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "png_file=@path/to/your/image.png"   -F "json_file=@path/to/your/color_settings.json"   -F "mesh_file=@path/to/your/mesh.obj"   -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]"   --output generated_file.lap
+```
+
 ### Process Paths (NPZ)
 
 #### Endpoint: `/api/jobs/standard-npz-paths2d-lap`
@@ -256,7 +318,6 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
 ```
-
 ### Process GVDesign Job
 
 #### Endpoint: `/api/jobs/standard-gvdesign-lap`
@@ -485,7 +546,9 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
 - Clone the repository and test scripts are in root folder.
 - Example scripts are available for each endpoint:
   - `standard_svg.py`
+  - `project3d_svg.py`
   - `standard_png.py`
+  - `project3d_png.py`
   - `standard_npz_paths2d.py`
   - `standard_npz_points2d.py`
   - `standard_gvdesign.py`
@@ -519,3 +582,4 @@ We welcome contributions! Please fork the repository and create a pull request f
 ---
 
 For further assistance or questions, please [open an issue](https://github.com/your-username/re4-job-file-api/issues).
+
