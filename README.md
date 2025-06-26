@@ -15,6 +15,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 1. [Getting Started](#getting-started)
 2. [Endpoints](#endpoints)
+   - [Get Workspace Size](#get-workspace-size)
    - [Process Vector Job (SVG)](#process-vector-job-svg)
    - [Process 3D Projected Vector Job (SVG)](#process-3d-projected-vector-job-svg)
    - [Process Raster Job (PNG)](#process-raster-job-png)
@@ -79,6 +80,29 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 ## Endpoints
 
+### Get Workspace Size
+
+#### Endpoint: `/api/jobs/get-workspace-size`
+
+**Description**: Retrieves the workspace size information from the specified device.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `device_access_code` (str): Device access code obtained from device touchscreen.
+
+**Response**:
+- Returns JSON data containing workspace size information for the device
+
+**Example cURL**:
+
+```bash
+curl -X POST "https://beta.fslaser.com/api/jobs/get-workspace-size" \
+  -F "device_access_code=my-device-access-code"
+```
+
 ### Process Vector Job (SVG)
 
 #### Endpoint: `/api/jobs/standard-svg-lap`
@@ -92,6 +116,8 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `workspace_width_mm` (float, optional): Workspace width in millimeters to place the file at top left of the workspace.
+  - `workspace_height_mm` (float, optional): Workspace height in millimeters to place the file at top left of the workspace.
 - **Files**:
   - `svg_file`: The SVG file to process.
   - `json_file`: A JSON file containing color settings.
@@ -99,7 +125,14 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 **Example cURL**:
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "svg_file=@path/to/your/file.svg"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code" \
+  -F "workspace_width_mm=100.0" \
+  -F "workspace_height_mm=100.0" \
+  -F "svg_file=@path/to/your/file.svg" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  --output generated_file.lap
 ```
 
 ### Process 3D Projected Vector Job (SVG)
@@ -117,6 +150,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `workspace_width_mm` (float, optional): Workspace width in millimeters to place the file at top left of the workspace.
+  - `workspace_height_mm` (float, optional): Workspace height in millimeters to place the file at top left of the workspace.
 - **Files**:
   - `svg_file`: The SVG file to process.
   - `json_file`: A JSON file containing color settings.
@@ -125,7 +160,15 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
 **Example cURL**:
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "svg_file=@path/to/your/file.svg"   -F "json_file=@path/to/your/color_settings.json"   -F "mesh_file=@path/to/your/mesh.obj"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code" \
+  -F "workspace_width_mm=100.0" \
+  -F "workspace_height_mm=100.0" \
+  -F "svg_file=@path/to/your/file.svg" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  -F "mesh_file=@path/to/your/mesh.obj" \
+  --output generated_file.lap
 ```
 
 ### Process Raster Job (PNG)
@@ -331,6 +374,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `workspace_width_mm` (float, optional): Workspace width in millimeters to place the file at top left of the workspace.
+  - `workspace_height_mm` (float, optional): Workspace height in millimeters to place the file at top left of the workspace.
 - **Files**:
   - `gvdesign_file`: The GVDesign file to process.
   - `json_file`: A JSON file containing color settings.
@@ -338,7 +383,14 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 **Example cURL**:
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "gvdesign_file=@path/to/your/file.gvdesign"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code" \
+  -F "workspace_width_mm=100.0" \
+  -F "workspace_height_mm=100.0" \
+  -F "gvdesign_file=@path/to/your/file.gvdesign" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  --output generated_file.lap
 ```
 
 ### Process PDF Job
@@ -354,6 +406,8 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap"   -F "pas
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_access_code` (str): Device access code obtained from device touchscreen.
+  - `workspace_width_mm` (float, optional): Workspace width in millimeters to place the file at top left of the workspace.
+  - `workspace_height_mm` (float, optional): Workspace height in millimeters to place the file at top left of the workspace.
 - **Files**:
   - `pdf_file`: The PDF file to process.
   - `json_file`: A JSON file containing color settings.
@@ -361,7 +415,14 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap"   -F "pas
 **Example cURL**:
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "pdf_file=@path/to/your/file.pdf"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_access_code=my-device-access-code" \
+  -F "workspace_width_mm=100.0" \
+  -F "workspace_height_mm=100.0" \
+  -F "pdf_file=@path/to/your/file.pdf" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  --output generated_file.lap
 ```
 
 > **Note**: The following three endpoints require you to add your device to the device list on the target API website and have the device connected to the website.

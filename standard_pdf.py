@@ -1,6 +1,6 @@
 import requests
 
-def test_get_pdf_lap(server, pass_code, device_access_code, pdf_file_path, json_file_path, output_file_path):
+def test_get_pdf_lap(server, pass_code, device_access_code, pdf_file_path, json_file_path, output_file_path, workspace_width_mm=0, workspace_height_mm=0):
     """
     Test the full-svg-lap endpoint.
 
@@ -21,6 +21,8 @@ def test_get_pdf_lap(server, pass_code, device_access_code, pdf_file_path, json_
             data = {
                 "pass_code": pass_code,
                 "device_access_code": device_access_code,
+                "workspace_width_mm": workspace_width_mm,
+                "workspace_height_mm": workspace_height_mm,
             }
             files = {
                 "pdf_file": pdf_file,
@@ -50,4 +52,16 @@ if __name__ == "__main__":
     pdf_file_path = "test.pdf"  # Path to a sample PDF file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     output_file_path = "output_pdf.lap"
-    test_get_pdf_lap(server=server, pass_code=pass_code, device_access_code=device_access_code, pdf_file_path=pdf_file_path, json_file_path=json_file_path, output_file_path=output_file_path)
+    # Optional: Set workspace size
+    workspace_width_mm = 100
+    workspace_height_mm = 100
+    test_get_pdf_lap(
+        server=server,
+        pass_code=pass_code,
+        device_access_code=device_access_code,
+        pdf_file_path=pdf_file_path,
+        json_file_path=json_file_path,
+        output_file_path=output_file_path,
+        workspace_width_mm=workspace_width_mm,
+        workspace_height_mm=workspace_height_mm
+    )
