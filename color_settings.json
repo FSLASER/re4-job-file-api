@@ -120,7 +120,7 @@
     "isRasterOptimized": false,
     "isDepthMap": false,
     "passes": 1,
-    "dpi": "100",
+    "dpi": "300",
     "power_percent": 20,
     "speed_mms": 1000,
     "frequency_kHz": 67,
