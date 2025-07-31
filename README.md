@@ -13,7 +13,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 1. [Getting Started](#getting-started)
 2. [Endpoints](#endpoints)
-   - [Process Vector Job (SVG)](#process-vector-job-svg)
+   - [Process Vector Job (SVG)](#Process Simple Vector Job (SVG))
    - [Process Raster Job (PNG)](#process-raster-job-png)
    - [Process Paths (NPZ)](#process-paths-npz)
    - [Process Points (NPZ)](#process-points-npz)
@@ -22,9 +22,9 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
    - [Query Job Status](#query-job-status)
    - [Camera Capture](#capture-image)
    - [Gantry Move](#gantry-move)
+   - [GPIO Pins](#gpio-pins)
 
-3. [Example Usage](#example-usage)
-   - [Test Scripts](#test-scripts)
+3. [Test Scripts](#test-scripts)
 4. [Contributing](#contributing)
 
 ---
@@ -39,7 +39,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
 
 ### Authentication Requirements
 
-- **User Passcode**: Required for all API endpoints. This can be found under your username after logging into the web interface (e.g., https://beta.fslaser.com). Note that for different website you will get a different user passcode.
+- **User Passcode**: Required for all API endpoints. This can be found under your username after logging into the web interface (e.g., [https://beta.fslaser.com](https://beta.fslaser.com)). Note that for different website you will get a different user passcode.
 - **Device Access Code**: Required for all API endpoints. This is displayed on the device's touchscreen and is unique to each machine.
   - The device must be added to the device list on the target API website
   - The device must be connected to the website
@@ -90,7 +90,7 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
   - `svg_file`: The SVG file to process.
   - `json_file`: A JSON file containing color settings.
 
-**Example cURL**:
+#### Example CURL (standard-svg-lap)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "svg_file=@path/to/your/file.svg"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
@@ -122,7 +122,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap"   -F "pass_cod
   - `png_file`: The PNG file to process.
   - `json_file`: A JSON file containing color settings.
 
-**Example cURL**:
+#### Example CURL (standard-png-lap)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "png_file=@path/to/your/image.png"   -F "json_file=@path/to/your/color_settings.json"   -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]"   --output generated_file.lap
@@ -141,11 +141,12 @@ Local origin of the image is at its top-left corner. Device coordinates start at
 
 To rotate an image and center it:
 
- - θ: The angle of the image
- - W: The width of the image, in mm
- - H: The height of the image, in mm
+- θ: The angle of the image
+- W: The width of the image, in mm
+- H: The height of the image, in mm
 
 Multiply these matrices R * T (order is important!):
+
 ```text
           R                 T
 [cos(θ)  -sin(θ)  0] · [1  0  -W/2]
@@ -160,6 +161,7 @@ Extract the resulting matrix into an array to use as `transform_params`:
 ```
 
 Common transformation examples:
+
 - Scale to 0.1: `[0.1, 0, 0, 0.1, 0, 0]`
 - Rotate 90 degrees clockwise: `[0, 1, -1, 0, 0, 0]`
 - Rotate 180 degrees: `[-1, 0, 0, -1, 0, 0]`
@@ -176,9 +178,9 @@ Common transformation examples:
 Note: The transformation is applied in the order: scale → shear → rotate → translate.
 
 For more detailed technical information about affine transformations, see:
+
 - [MathWorks documentation](https://www.mathworks.com/discovery/affine-transformation.html)
 - [Apache Sedona documentation](https://sedona.apache.org/1.6.1/api/sql/Raster-affine-transformation/)
-
 
 **DPI and Scaling**:
 The API assumes all input images are at 96 DPI (dots per inch) when converting to millimeters. This is important for calculating the correct scale factor:
@@ -200,12 +202,12 @@ The API assumes all input images are at 96 DPI (dots per inch) when converting t
       - Preserves original image resolution
       - Backend uses full resolution for better quality
       - More flexible for combining with other transformations
-   
+
    b. **Pre-scaling the Image**:
       - Resize your image to the target pixel dimensions (e.g., 377×894 pixels)
       - Simpler but may reduce quality if original image is higher resolution
       - Less flexible for combining with other transformations
-      
+
 ### Process Paths (NPZ)
 
 #### Endpoint: `/api/jobs/standard-npz-paths2d-lap`
@@ -224,7 +226,7 @@ The API assumes all input images are at 96 DPI (dots per inch) when converting t
   - `npz_file`: The NPZ file containing vector paths.
   - `json_file`: A JSON file containing color settings.
 
-**Example cURL**:
+#### Example CURL (standard-npz-paths2d-lap)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   -F "color=#FF5733"   --output generated_file.lap
@@ -247,7 +249,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
   - `npz_file`: The NPZ file containing vector paths.
   - `json_file`: A JSON file containing color settings.
 
-**Example cURL**:
+#### Example CURL (standard-npz-points2d-lap)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F "pass_code=my-pass-code"   -F "device_access_code=my-device-access-code"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
@@ -273,7 +275,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 - **Files**:
   - `lap_file`: The `.lap` file to execute.
 
-**Example cURL**:
+#### Example CURL (api-run-lap-job)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
@@ -296,7 +298,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
 
-**Example cURL**:
+#### Example CURL (api-stop-job)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
@@ -318,7 +320,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
 
-**Example cURL**:
+#### Example CURL (api-query-job-status)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
@@ -338,33 +340,36 @@ Captures an image from the specified device.
 
 The request should be `multipart/form-data` and include the following fields:
 
-  *   `device_access_code` (string, required): The access code for the device.
-  * `pass_code` (string, required): The user's pass code.
-  *   `is_corrected` (boolean, optional): Specifies whether the captured image should be corrected. If `true`, the corrected image is returned. Otherwise, the original image is returned. Defaults to `false` if not specified.
+- `device_access_code` (string, required): The access code for the device.
+- `pass_code` (string, required): The user's pass code.
+- `is_corrected` (boolean, optional): Specifies whether the captured image should be corrected. If `true`, the corrected image is returned. Otherwise, the original image is returned. Defaults to `false` if not specified.
 
 **Responses:**
 
-*   **`200 OK`**:
-    *   Content-Type: `image/jpeg`
-    *   Body: The raw image bytes.
-*   **`400 Bad Request` (or other error codes from `validate_device`)**:
-    *   Content-Type: `application/json`
-    *   Body: JSON object describing the validation error.
+- **`200 OK`**:
+  - Content-Type: `image/jpeg`
+  - Body: The raw image bytes.
+- **`400 Bad Request` (or other error codes from `validate_device`)**:
+  - Content-Type: `application/json`
+  - Body: JSON object describing the validation error.
+
     ```json
     {
         "message": "Error message detailing validation failure"
     }
     ```
-*   **`500 Internal Server Error`**:
-    *   Content-Type: `application/json`
-    *   Body: JSON object describing the error.
+
+- **`500 Internal Server Error`**:
+  - Content-Type: `application/json`
+  - Body: JSON object describing the error.
+
     ```json
     {
         "message": "Failed to capture image"
     }
     ```
 
-**Example Curl:**
+#### Example CURL (capture-image)
 
 ```bash
 curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
@@ -397,7 +402,7 @@ curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
 
 This endpoint allows you to move the gantry of a device to a specific position. If you do not wish to move along a particular axis, set its value to `null` or omit it. The endpoint requires a valid device access code for authentication and device selection.
 
-### Example cURL
+#### Example CURL (gantry-move)
 
 ```sh
 curl -X POST "https://your-server/api/jobs/gantry-move" \
@@ -411,6 +416,7 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
 
 - **Status:** `200 OK`
 - **Body:**
+
   ```json
   {
     "message": "Gantry moved successfully"
@@ -420,11 +426,146 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
 ### Error Responses
 
 - **Status:** `500 Internal Server Error`
+
   ```json
   {
     "message": "An unexpected error occurred while moving the gantry."
   }
   ```
+
+- **Status:** `4xx/5xx` (validation or device errors)
+  - Returns a JSON error message describing the issue.
+
+---
+
+### GPIO Pins
+
+#### Endpoint: `/api/jobs/set-gpio`
+
+**Description:** Sets the specified GPIO pin high.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
+  - `gpio_pin` (int): The pin to set.
+
+#### Example cURL (set-gpio)
+
+```sh
+curl -X POST "https://beta.fslaser.com/api/jobs/set-gpio" \
+  -F "gpio_pin=1" \
+  -F "device_access_code=YOUR_DEVICE_ACCESS_CODE"
+```
+
+**Success Response**:
+
+- **Status:** `200 OK`
+
+**Error Responses**:
+
+- **Status:** `4xx/5xx` (validation or device errors)
+  - Returns a JSON error message describing the issue.
+
+#### Endpoint: `/api/jobs/clear-gpio`
+
+**Description:** Sets the specified GPIO pin low.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
+  - `gpio_pin` (int): The pin to clear.
+
+#### Example CURL (clear-gpio)
+
+```sh
+curl -X POST "https://beta.fslaser.com/api/jobs/clear-gpio" \
+  -F "gpio_pin=1" \
+  -F "device_access_code=YOUR_DEVICE_ACCESS_CODE"
+```
+
+**Success Response**:
+
+- **Status:** `200 OK`
+
+**Error Responses**:
+
+- **Status:** `4xx/5xx` (validation or device errors)
+  - Returns a JSON error message describing the issue.
+
+#### Endpoint: `/api/jobs/get-gpio`
+
+**Description:** Gets the status of the specified GPIO pin.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
+  - `gpio_pin` (int): The pin to get.
+
+#### Example CURL (get-gpio)
+
+```sh
+curl -X POST "https://beta.fslaser.com/api/jobs/get-gpio" \
+  -F "gpio_pin=1" \
+  -F "device_access_code=YOUR_DEVICE_ACCESS_CODE"
+```
+
+**Success Response**:
+
+- **Status:** `200 OK`
+- **Body:**
+
+  ```json
+  {
+    "gpio_state": int
+  }
+  ```
+
+**Error Responses**:
+
+- **Status:** `4xx/5xx` (validation or device errors)
+  - Returns a JSON error message describing the issue.
+
+#### Endpoint: `/api/jobs/blink-gpio`
+
+**Description:** Blinks the specified GPIO pin high with the specified duration.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
+  - `gpio_pin` (int): The pin to set.
+  - `blink_duration_ms` (int, optional): The duration of the blink in milliseconds. Default is 1000, if not specified.
+
+#### Example cURL (blink-gpio)
+
+```sh
+curl -X POST "https://beta.fslaser.com/api/jobs/blink-gpio" \
+  -F "gpio_pin=1" \
+  -F "blink_duration_ms=250" \
+  -F "device_access_code=YOUR_DEVICE_ACCESS_CODE"
+```
+
+**Success Response**:
+
+- **Status:** `200 OK`
+
+**Error Responses**:
+
 - **Status:** `4xx/5xx` (validation or device errors)
   - Returns a JSON error message describing the issue.
 
@@ -442,6 +583,7 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
   - `api_stop_job.py`
   - `api_query_job_status.py`
   - `api_capture_image.py`
+  - `api_gpio.py`
 
 #### Running a Test Script
 
@@ -450,6 +592,7 @@ python standard_svg.py
 ```
 
 Before running any script, make sure to:
+
 1. Update the `pass_code` with your user passcode from the website
 2. Update the `device_access_code` with the code from your device's touchscreen
 3. Set the correct paths for input and output files
