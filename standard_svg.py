@@ -1,6 +1,6 @@
 import requests
 
-def test_get_standard_svg_lap(server, pass_code, device_access_code, svg_file_path, json_file_path, output_file_path, workspace_width_mm=0, workspace_height_mm=0):
+def test_get_standard_svg_lap(server, pass_code, device_access_code, svg_file_path, json_file_path, output_file_path, workspaceX_mm_min=0, workspaceX_mm_max=0, workspaceY_mm_min=0, workspaceY_mm_max=0):
     """
     Test the standard-svg-lap endpoint.
 
@@ -21,8 +21,10 @@ def test_get_standard_svg_lap(server, pass_code, device_access_code, svg_file_pa
             data = {
                 "pass_code": pass_code,
                 "device_access_code": device_access_code,
-                "workspace_width_mm": workspace_width_mm,
-                "workspace_height_mm": workspace_height_mm,
+                "workspaceX_mm_min": workspaceX_mm_min,
+                "workspaceX_mm_max": workspaceX_mm_max,
+                "workspaceY_mm_min": workspaceY_mm_min,
+                "workspaceY_mm_max": workspaceY_mm_max,
             }
             files = {
                 "svg_file": svg_file,
@@ -53,8 +55,10 @@ if __name__ == "__main__":
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     output_file_path = "output_standard_svg.lap"
     # Optional: Set workspace size
-    workspace_width_mm = 100
-    workspace_height_mm = 100
+    workspaceX_mm_min = -50
+    workspaceX_mm_max = 50
+    workspaceY_mm_min = -50
+    workspaceY_mm_max = 50
     test_get_standard_svg_lap(
         server=server,
         pass_code=pass_code,
@@ -62,6 +66,8 @@ if __name__ == "__main__":
         svg_file_path=svg_file_path,
         json_file_path=json_file_path,
         output_file_path=output_file_path,
-        workspace_width_mm=workspace_width_mm,
-        workspace_height_mm=workspace_height_mm
+        workspaceX_mm_min=workspaceX_mm_min,
+        workspaceX_mm_max=workspaceX_mm_max,
+        workspaceY_mm_min=workspaceY_mm_min,
+        workspaceY_mm_max=workspaceY_mm_max
     )
