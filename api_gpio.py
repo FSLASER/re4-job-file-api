@@ -1,5 +1,4 @@
 import requests
-import shutil
 
 # --- Configuration ---
 BASE_URL = "https://beta.fslaser.com/api/jobs"  # Replace with your actual server URL
@@ -148,7 +147,7 @@ def test_get_gpio(gpio_pin: int):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-def test_blink_gpio(gpio_pin: int, blink_duration_ms: int):
+def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None):
     """
     Tests the /api/jobs/blink-gpio endpoint.
 
@@ -199,6 +198,51 @@ def test_blink_gpio(gpio_pin: int, blink_duration_ms: int):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
+def test_send_gpio(gpio_command: str):
+    """
+    Tests the /api/jobs/send-gpio endpoint.
+
+    Args:
+        gpio_command (str): The GPIO command to send.
+    """
+    endpoint = f"{BASE_URL}/send-gpio"
+    
+    form_data = {
+        "device_access_code": DEVICE_ACCESS_CODE,
+        "pass_code": PASS_CODE,
+    }
+
+    if gpio_command is not None:
+        form_data["gpio_command"] = gpio_command # FastAPI expects a string for the GPIO command
+
+    print(f'\nAttempting to send GPIO command "{gpio_command}"...')
+    print(f'Endpoint: {endpoint}')
+    print(f'Form data: {form_data}')
+
+    try:
+        response = requests.post(endpoint, data=form_data)
+
+        print(f"Status Code: {response.status_code}")
+        print(f"Headers: {response.headers}")
+
+        if response.status_code == 200:
+            print("Successfully sent GPIO command")
+        elif response.headers.get("content-type") == "application/json":
+            print("Error response (JSON):")
+            try:
+                print(response.json())
+            except requests.exceptions.JSONDecodeError:
+                print("Could not decode JSON response.")
+                print(f"Raw content: {response.text}")
+        else:
+            print("Unexpected response format or error.")
+            print(f"Raw content: {response.text}")
+
+    except requests.exceptions.RequestException as e:
+        print(f"An error occurred during the request: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
 if __name__ == "__main__":
     # --- Test Cases ---
 
@@ -231,6 +275,12 @@ if __name__ == "__main__":
 
     # 10. Test with blink_gpio with gpio_pin = -1 and default blink_duration_ms
     test_blink_gpio(gpio_pin=-1)
+
+    # 11. Test with send_gpio with gpio_command = "set pin1"
+    test_send_gpio(gpio_command="set pin1")
+
+    # 12. Test with send_gpio with gpio_command = "clear pin1"
+    test_send_gpio(gpio_command="clear pin1")
 
     print("\n--- All tests finished ---")
     

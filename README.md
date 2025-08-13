@@ -733,6 +733,36 @@ curl -X POST "https://beta.fslaser.com/api/jobs/blink-gpio" \
 - **Status:** `4xx/5xx` (validation or device errors)
   - Returns a JSON error message describing the issue.
 
+#### Endpoint: `/api/jobs/send-gpio`
+
+**Description:** Sends the specified command.
+
+**Method**: `POST`
+
+**Request Parameters**:
+
+- **Form Fields**:
+  - `pass_code` (str): The user's pass code obtained from RE4.
+  - `device_access_code` (str): Device access code obtained from RE4 or the device touchscreen.
+  - `gpio_command` (str): The command to send.
+
+#### Example cURL (send-gpio)
+
+```sh
+curl -X POST "https://beta.fslaser.com/api/jobs/send-gpio" \
+  -F "gpio_command=set pin1" \
+  -F "device_access_code=YOUR_DEVICE_ACCESS_CODE"
+```
+
+**Success Response**:
+
+- **Status:** `200 OK`
+
+**Error Responses**:
+
+- **Status:** `4xx/5xx` (validation or device errors)
+  - Returns a JSON error message describing the issue.
+
 ---
 
 ### Test Scripts
