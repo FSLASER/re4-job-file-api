@@ -1,13 +1,13 @@
 import requests
 
-def test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_limit_check):
+def test_run_lap_job(server, pass_code, device_id, lap_file_path, soft_limit_check):
     """
     Test the api-run-lap-job endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
     """
     try:
         url = server + "/api/jobs/api-run-lap-job"
@@ -15,7 +15,7 @@ def test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_
         # Prepare the data and files for the POST request
         data = {
             "pass_code": pass_code,
-            "device_access_code": device_access_code,
+            "device_id": device_id,
             "soft_limit_check": soft_limit_check,
         }
         
@@ -41,7 +41,7 @@ def test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    device_id = "AE356O3E89D" #Device ID for device authentication.
     lap_file_path = "C:/Users/Administrator/Desktop/test.lap" #Path to the LAP file to be uploaded
     soft_limit_check = True
-    test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_limit_check)
+    test_run_lap_job(server, pass_code, device_id, lap_file_path, soft_limit_check)

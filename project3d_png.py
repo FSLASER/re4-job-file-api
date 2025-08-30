@@ -1,14 +1,14 @@
 import requests
 import json
 
-def test_get_project3d_png_lap(server, pass_code, device_access_code, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path):
+def test_get_project3d_png_lap(server, pass_code, device_id, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path):
     """
     Test the standard-png-lap endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
         png_file_path (str): Path to the PNG file.
         json_file_path (str): Path to the JSON file.
         transform_params (list): List of transformation parameters [sx, shx, shy, sy, tx, ty].
@@ -22,7 +22,7 @@ def test_get_project3d_png_lap(server, pass_code, device_access_code, png_file_p
             # Prepare the data and files for the POST request
             data = {
                 "pass_code": pass_code,
-                "device_access_code": device_access_code,
+                "device_id": device_id,
                 "transform_params": json.dumps(transform_params),  # Convert to JSON-like string
             }
             files = {
@@ -52,11 +52,11 @@ if __name__ == "__main__":
     # Define test parameters
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    device_id = "AE356O3E89D" #Device ID for device authentication.
     png_file_path = "test.png"  # Path to a sample PNG file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     transform_params = [0.1, 0.0, 0.0, 0.1, 0, 0]  # Example transform parameters
     mesh_file_path = "sub.obj"
     output_file_path = "output_project3d_png.lap"
     # Run the test
-    test_get_project3d_png_lap(server, pass_code, device_access_code, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path)
+    test_get_project3d_png_lap(server, pass_code, device_id, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path)

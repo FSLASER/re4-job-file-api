@@ -1,13 +1,13 @@
 import requests
 
-def test_stop_job(server, pass_code, device_access_code):
+def test_stop_job(server, pass_code, device_id):
     """
     Test the api-stop-job endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
     """
     try:
         url = server + "/api/jobs/api-stop-job"
@@ -15,7 +15,7 @@ def test_stop_job(server, pass_code, device_access_code):
         # Prepare the data and files for the POST request
         data = {
             "pass_code": pass_code,
-            "device_access_code": device_access_code,
+            "device_id": device_id,
         }
 
         # Send the POST request
@@ -35,6 +35,6 @@ def test_stop_job(server, pass_code, device_access_code):
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    device_id = "AE356O3E89D" #Device ID for device authentication.
 
-    test_stop_job(server, pass_code, device_access_code)
+    test_stop_job(server, pass_code, device_id)

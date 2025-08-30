@@ -1,13 +1,13 @@
 import requests
 
-def test_get_standard_paths2d_lap(server, pass_code, device_access_code, npz_file_path, json_file_path, color, output_file_path):
+def test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, json_file_path, color, output_file_path):
     """
     Test script for the '/api/jobs/standard-npz-paths2d-lap' endpoint.
 
     Args:
         server (str): Server URL.
         pass_code (str): User's pass code.
-        device_access_code (str): Device access code.
+        device_id (str): Device ID for authentication.
         npz_file_path (str): Path to the input NPZ file.
         json_file_path (str): Path to the input JSON file.
         color (str): Stroke color for the vector.
@@ -21,7 +21,7 @@ def test_get_standard_paths2d_lap(server, pass_code, device_access_code, npz_fil
             # Prepare the request data
             data = {
                 "pass_code": pass_code,
-                "device_access_code": device_access_code,
+                "device_id": device_id,
                 "color": color,
             }
             files = {
@@ -97,7 +97,7 @@ if __name__ == "__main__":
     # Define the server and input parameters
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    device_id = "AE356O3E89D" #Device ID for device authentication.
     npz_file_path = "test_paths.npz"  # Path to a sample NPZ file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     color = "#000000"  # Example color for the vector
@@ -105,4 +105,4 @@ if __name__ == "__main__":
 
     generate_star_vectors(file_path=npz_file_path)
     # Run the test
-    test_get_standard_paths2d_lap(server, pass_code, device_access_code, npz_file_path, json_file_path, color, output_file_path)
+    test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, json_file_path, color, output_file_path)

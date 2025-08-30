@@ -1,13 +1,13 @@
 import requests
 
-def test_get_project3d_svg_lap(server, pass_code, device_access_code, svg_file_path, json_file_path, mesh_file_path, output_file_path, workspaceX_mm_min=0, workspaceX_mm_max=0, workspaceY_mm_min=0, workspaceY_mm_max=0):
+def test_get_project3d_svg_lap(server, pass_code, device_id, svg_file_path, json_file_path, mesh_file_path, output_file_path, workspaceX_mm_min=0, workspaceX_mm_max=0, workspaceY_mm_min=0, workspaceY_mm_max=0):
     """
     Test the standard-svg-lap endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
         svg_file_path (str): Path to the svg file.
         json_file_path (str): Path to the JSON file.
         output_file_path (str): Path to save the output file.
@@ -20,7 +20,7 @@ def test_get_project3d_svg_lap(server, pass_code, device_access_code, svg_file_p
             # Prepare the data and files for the POST request
             data = {
                 "pass_code": pass_code,
-                "device_access_code": device_access_code,
+                "device_id": device_id,
                 "workspaceX_mm_min": workspaceX_mm_min,
                 "workspaceX_mm_max": workspaceX_mm_max,
                 "workspaceY_mm_min": workspaceY_mm_min,
@@ -51,7 +51,7 @@ def test_get_project3d_svg_lap(server, pass_code, device_access_code, svg_file_p
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    device_id = "AE356O3E89D" #Device ID for device authentication.
     svg_file_path = "test3.svg"  # Path to a sample SVG file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     mesh_file_path = "sub.obj"
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     workspaceY_mm_min = -50
     workspaceY_mm_max = 50
     test_get_project3d_svg_lap(
-        server, pass_code, device_access_code, svg_file_path, 
+        server, pass_code, device_id, svg_file_path, 
         json_file_path, mesh_file_path, output_file_path, 
         workspaceX_mm_min=workspaceX_mm_min, 
         workspaceX_mm_max=workspaceX_mm_max,

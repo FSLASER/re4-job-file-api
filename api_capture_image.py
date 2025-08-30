@@ -3,7 +3,7 @@ import shutil
 
 # --- Configuration ---
 BASE_URL = "https://beta.fslaser.com/api/jobs"  # Replace with your actual server URL
-DEVICE_ACCESS_CODE = "Chastity:Lasso:87"  # Replace with a valid device access code
+DEVICE_ID = "AE356O3E89D"  # Replace with a valid device ID
 PASS_CODE = "Pork_Hacking_98"  # Replace with a valid pass code
 # --- End Configuration ---
 
@@ -18,7 +18,7 @@ def test_capture_image(is_corrected_value=None, output_filename="captured_image.
     endpoint = f"{BASE_URL}/capture-image"
     
     form_data = {
-        "device_access_code": DEVICE_ACCESS_CODE,
+        "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
     }
 
