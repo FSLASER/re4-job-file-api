@@ -1,6 +1,6 @@
 import requests
 
-def test_gvdesign_lap(server, pass_code, device_id, gvdesign_file_path, json_file_path, output_file_path, workspaceX_mm_min=0, workspaceX_mm_max=0, workspaceY_mm_min=0, workspaceY_mm_max=0):
+def test_gvdesign_lap(server, pass_code, device_id, device_ip, gvdesign_file_path, json_file_path, output_file_path, workspaceX_mm_min=0, workspaceX_mm_max=0, workspaceY_mm_min=0, workspaceY_mm_max=0):
     """
     Test the full-svg-lap endpoint.
 
@@ -8,6 +8,7 @@ def test_gvdesign_lap(server, pass_code, device_id, gvdesign_file_path, json_fil
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
         device_id (str): Device ID for authentication.
+        device_ip (str): Device IP for authentication.
         gvdesign_file_path (str): Path to the gvdesign file.
         json_file_path (str): Path to the JSON file.
         output_file_path (str): Path to save the output file.
@@ -15,12 +16,15 @@ def test_gvdesign_lap(server, pass_code, device_id, gvdesign_file_path, json_fil
     try:
         url = server + "/api/jobs/standard-gvdesign-lap"
 
+        # get the device auth code from the {device_ip}/2fa
+        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
         # Open the files to upload
         with open(gvdesign_file_path, "rb") as gvdesign_file, open(json_file_path, "rb") as json_file:
             # Prepare the data and files for the POST request
             data = {
                 "pass_code": pass_code,
                 "device_id": device_id,
+                "device_auth_code": device_auth_code,
                 "workspaceX_mm_min": workspaceX_mm_min,
                 "workspaceX_mm_max": workspaceX_mm_max,
                 "workspaceY_mm_min": workspaceY_mm_min,
@@ -51,6 +55,7 @@ if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
     device_id = "AE356O3E89D" #Device ID for device authentication.
+    device_ip = "192.168.1.100" #Device IP for device authentication.
     gvdesign_file_path = "test2.gvdesign"  # Path to a sample SVG file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     output_file_path = "output_gvdesign.lap"
@@ -63,6 +68,7 @@ if __name__ == "__main__":
         server=server,
         pass_code=pass_code,
         device_id=device_id,
+        device_ip=device_ip,
         gvdesign_file_path=gvdesign_file_path,
         json_file_path=json_file_path,
         output_file_path=output_file_path,

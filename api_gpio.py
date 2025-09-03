@@ -4,6 +4,7 @@ import requests
 BASE_URL = "https://beta.fslaser.com/api/jobs"  # Replace with your actual server URL
 DEVICE_ID = "AE356O3E89D"  # Replace with a valid device ID
 PASS_CODE = "Pork_Hacking_98"  # Replace with a valid pass code
+DEVICE_IP = "192.168.1.100"  # Replace with a valid device IP address
 # --- End Configuration ---
 
 def test_set_gpio(gpio_pin: int):
@@ -15,9 +16,12 @@ def test_set_gpio(gpio_pin: int):
     """
     endpoint = f"{BASE_URL}/set-gpio"
     
+    # get the device auth code from the {device_ip}/2fa
+    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
+        "device_auth_code": device_auth_code,
     }
 
     if gpio_pin is not None:
@@ -60,9 +64,12 @@ def test_clear_gpio(gpio_pin: int):
     """
     endpoint = f"{BASE_URL}/clear-gpio"
     
+    # get the device auth code from the {device_ip}/2fa
+    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
+        "device_auth_code": device_auth_code,
     }
 
     if gpio_pin is not None:
@@ -103,11 +110,14 @@ def test_get_gpio(gpio_pin: int):
     Args:
         gpio_pin (int): The GPIO pin to get.
     """
-    endpoint = f"{BASE_URL}/set-gpio"
+    endpoint = f"{BASE_URL}/get-gpio"
     
+    # get the device auth code from the {device_ip}/2fa
+    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
+        "device_auth_code": device_auth_code,
     }
 
     if gpio_pin is not None:
@@ -158,9 +168,12 @@ def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None):
     """
     endpoint = f"{BASE_URL}/blink-gpio"
     
+    # get the device auth code from the {device_ip}/2fa
+    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
+        "device_auth_code": device_auth_code,
     }
 
     if gpio_pin is not None:
@@ -207,9 +220,12 @@ def test_send_gpio(gpio_command: str):
     """
     endpoint = f"{BASE_URL}/send-gpio"
     
+    # get the device auth code from the {device_ip}/2fa
+    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
+        "device_auth_code": device_auth_code,
     }
 
     if gpio_command is not None:

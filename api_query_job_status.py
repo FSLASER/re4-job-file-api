@@ -1,6 +1,6 @@
 import requests
 
-def test_query_job_status(server, pass_code, device_id):
+def test_query_job_status(server, pass_code, device_id, device_ip):
     """
     Test the api-query-job-status endpoint.
 
@@ -8,14 +8,18 @@ def test_query_job_status(server, pass_code, device_id):
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
         device_id (str): Device ID for authentication.
+        device_ip (str): Device IP for authentication.
     """
     try:
         url = server + "/api/jobs/api-query-job-status"
 
+        # get the device auth code from the {device_ip}/2fa
+        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
         # Prepare the data and files for the POST request
         data = {
             "pass_code": pass_code,
             "device_id": device_id,
+            "device_auth_code": device_auth_code,
         }
 
         # Send the POST request
@@ -36,5 +40,5 @@ if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
     device_id = "AE356O3E89D" #Device ID for device authentication.
-
-    test_query_job_status(server, pass_code, device_id)
+    device_ip = "192.168.1.100" #Device IP for device authentication.
+    test_query_job_status(server, pass_code, device_id, device_ip)

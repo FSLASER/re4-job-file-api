@@ -1,7 +1,7 @@
 import requests
 import json
 
-def test_get_project3d_png_lap(server, pass_code, device_id, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path):
+def test_get_project3d_png_lap(server, pass_code, device_id, device_ip, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path):
     """
     Test the standard-png-lap endpoint.
 
@@ -9,6 +9,7 @@ def test_get_project3d_png_lap(server, pass_code, device_id, png_file_path, json
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
         device_id (str): Device ID for authentication.
+        device_ip (str): Device IP for authentication.
         png_file_path (str): Path to the PNG file.
         json_file_path (str): Path to the JSON file.
         transform_params (list): List of transformation parameters [sx, shx, shy, sy, tx, ty].
@@ -17,12 +18,15 @@ def test_get_project3d_png_lap(server, pass_code, device_id, png_file_path, json
     try:
         url = f"{server}/api/jobs/project3d-png-lap"
 
+        # get the device auth code from the {device_ip}/2fa
+        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
         # Open the files to upload
         with open(png_file_path, "rb") as png_file, open(json_file_path, "rb") as json_file, open(mesh_file_path, "rb") as mesh_file:
             # Prepare the data and files for the POST request
             data = {
                 "pass_code": pass_code,
                 "device_id": device_id,
+                "device_auth_code": device_auth_code,
                 "transform_params": json.dumps(transform_params),  # Convert to JSON-like string
             }
             files = {
@@ -53,10 +57,11 @@ if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
     device_id = "AE356O3E89D" #Device ID for device authentication.
+    device_ip = "192.168.1.100" #Device IP for device authentication.
     png_file_path = "test.png"  # Path to a sample PNG file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     transform_params = [0.1, 0.0, 0.0, 0.1, 0, 0]  # Example transform parameters
     mesh_file_path = "sub.obj"
     output_file_path = "output_project3d_png.lap"
     # Run the test
-    test_get_project3d_png_lap(server, pass_code, device_id, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path)
+    test_get_project3d_png_lap(server, pass_code, device_id, device_ip, png_file_path, json_file_path, mesh_file_path, transform_params, output_file_path)

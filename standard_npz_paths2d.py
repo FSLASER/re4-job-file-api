@@ -1,6 +1,6 @@
 import requests
 
-def test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, json_file_path, color, output_file_path):
+def test_get_standard_paths2d_lap(server, pass_code, device_id, device_ip, npz_file_path, json_file_path, color, output_file_path):
     """
     Test script for the '/api/jobs/standard-npz-paths2d-lap' endpoint.
 
@@ -8,6 +8,7 @@ def test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, j
         server (str): Server URL.
         pass_code (str): User's pass code.
         device_id (str): Device ID for authentication.
+        device_ip (str): Device IP for authentication.
         npz_file_path (str): Path to the input NPZ file.
         json_file_path (str): Path to the input JSON file.
         color (str): Stroke color for the vector.
@@ -16,6 +17,8 @@ def test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, j
     try:
         url = f"{server}/api/jobs/standard-npz-paths2d-lap"  # Endpoint URL
 
+        # get the device auth code from the {device_ip}/2fa
+        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
         # Open the files to upload
         with open(npz_file_path, "rb") as npz_file, open(json_file_path, "rb") as json_file:
             # Prepare the request data
@@ -23,6 +26,7 @@ def test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, j
                 "pass_code": pass_code,
                 "device_id": device_id,
                 "color": color,
+                "device_auth_code": device_auth_code,
             }
             files = {
                 "npz_file": npz_file,
@@ -98,6 +102,7 @@ if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
     device_id = "AE356O3E89D" #Device ID for device authentication.
+    device_ip = "192.168.1.100" #Device IP for device authentication.
     npz_file_path = "test_paths.npz"  # Path to a sample NPZ file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     color = "#000000"  # Example color for the vector
@@ -105,4 +110,4 @@ if __name__ == "__main__":
 
     generate_star_vectors(file_path=npz_file_path)
     # Run the test
-    test_get_standard_paths2d_lap(server, pass_code, device_id, npz_file_path, json_file_path, color, output_file_path)
+    test_get_standard_paths2d_lap(server, pass_code, device_id, device_ip, npz_file_path, json_file_path, color, output_file_path)

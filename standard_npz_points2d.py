@@ -1,6 +1,6 @@
 import requests
 
-def test_get_standard_points2d_lap(server, pass_code, device_id, npz_file_path, json_file_path, output_file_path):
+def test_get_standard_points2d_lap(server, pass_code, device_id, device_ip, npz_file_path, json_file_path, output_file_path):
     """
     Test the standard-npz-points2d-lap endpoint.
 
@@ -8,6 +8,7 @@ def test_get_standard_points2d_lap(server, pass_code, device_id, npz_file_path, 
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
         device_id (str): Device ID for authentication.
+        device_ip (str): Device IP for authentication.
         npz_file_path (str): Path to the .npz file.
         json_file_path (str): Path to the JSON file.
         output_file_path (str): Path to save the output file.
@@ -15,12 +16,15 @@ def test_get_standard_points2d_lap(server, pass_code, device_id, npz_file_path, 
     try:
         url = f"{server}/api/jobs/standard-npz-points2d-lap"
 
+        # get the device auth code from the {device_ip}/2fa
+        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
         # Open the files to upload
         with open(npz_file_path, "rb") as npz_file, open(json_file_path, "rb") as json_file:
             # Prepare the data and files for the POST request
             data = {
                 "pass_code": pass_code,
                 "device_id": device_id,
+                "device_auth_code": device_auth_code,
             }
             files = {
                 "npz_file": npz_file,
@@ -82,6 +86,7 @@ if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
     device_id = "AE356O3E89D" #Device ID for device authentication.
+    device_ip = "192.168.1.100" #Device IP for device authentication.
     npz_file_path = "test_points.npz"  # Path to a sample .npz file
     json_file_path = "color_settings.json"  # Path to a sample JSON file
     output_file_path = "output_npz_points2d.lap"  # Path to save the LAP file
@@ -90,4 +95,4 @@ if __name__ == "__main__":
     generate_npz_from_png(png_file_path, npz_file_path)
 
     # Run the test
-    test_get_standard_points2d_lap(server, pass_code, device_id, npz_file_path, json_file_path, output_file_path)
+    test_get_standard_points2d_lap(server, pass_code, device_id, device_ip, npz_file_path, json_file_path, output_file_path)

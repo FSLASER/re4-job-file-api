@@ -5,6 +5,7 @@ import shutil
 BASE_URL = "https://beta.fslaser.com/api/jobs"  # Replace with your actual server URL
 DEVICE_ID = "AE356O3E89D"  # Replace with a valid device ID
 PASS_CODE = "Pork_Hacking_98"  # Replace with a valid pass code
+DEVICE_IP = "192.168.1.100"  # Replace with a valid device IP address
 # --- End Configuration ---
 
 def test_capture_image(is_corrected_value=None, output_filename="captured_image.jpg"):
@@ -17,9 +18,12 @@ def test_capture_image(is_corrected_value=None, output_filename="captured_image.
     """
     endpoint = f"{BASE_URL}/capture-image"
     
+    # get the device auth code from the {device_ip}/2fa
+    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
+        "device_auth_code": device_auth_code,
     }
 
     if is_corrected_value is not None:

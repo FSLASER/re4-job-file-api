@@ -50,6 +50,10 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
   - The device must be added to the device list on the target API website
   - The device must be connected to the website
   - The generated `.lap` file will only work with the correct device
+- **Device Auth Code**: Required for most API endpoints (except `get-workspace-bounds`). This is a time-based one-time password (TOTP) that must be fetched from the device's `/2fa` endpoint.
+  - Obtained by making a GET request to `http://{device_ip}/2fa` 
+  - The response contains a JSON object with a `totp` field containing the auth code
+  - This code changes periodically and must be fetched fresh for each API call
 
 ### File Requirements
 
@@ -125,6 +129,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/get-workspace-bounds" \
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `workspaceX_mm_min` (float, optional): Workspace X min in millimeters to position the file in the workspace correctly.
   - `workspaceX_mm_max` (float, optional): Workspace X max in millimeters to position the file in the workspace correctly.
   - `workspaceY_mm_min` (float, optional): Workspace Y min in millimeters to position the file in the workspace correctly.
@@ -139,6 +144,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/get-workspace-bounds" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -163,6 +169,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap" \
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `workspaceX_mm_min` (float, optional): Workspace X min in millimeters to position the file in the workspace correctly.
   - `workspaceX_mm_max` (float, optional): Workspace X max in millimeters to position the file in the workspace correctly.
   - `workspaceY_mm_min` (float, optional): Workspace Y min in millimeters to position the file in the workspace correctly.
@@ -178,6 +185,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -201,6 +209,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap" \
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `transform_params` (str): A JSON string with transformation parameters (`[sx, shy, shx, sy, tx, ty]`) which operates in mm space.
     - `sx`: Scale factor in the x-direction
     - `shy`: Shear factor in the y-direction
@@ -217,7 +226,14 @@ curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap" \
 #### Example CURL (standard-png-lap)
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap"   -F "pass_code=my-pass-code"   -F "device_id=AE356O3E89D"   -F "png_file=@path/to/your/image.png"   -F "json_file=@path/to/your/color_settings.json"   -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "png_file=@path/to/your/image.png" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]" \
+  --output generated_file.lap
 ```
 
 **NOTE**:
@@ -313,6 +329,7 @@ The API assumes all input images are at 96 DPI (dots per inch) when converting t
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `color` (str): Stroke color for the vector paths.
 - **Files**:
   - `npz_file`: The NPZ file containing vector paths.
@@ -321,7 +338,14 @@ The API assumes all input images are at 96 DPI (dots per inch) when converting t
 #### Example CURL (standard-npz-paths2d-lap)
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "pass_code=my-pass-code"   -F "device_id=AE356O3E89D"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   -F "color=#FF5733"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "npz_file=@path/to/your/file.npz" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  -F "color=#FF5733" \
+  --output generated_file.lap
 ```
 
 ### Process Points (NPZ)
@@ -337,6 +361,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
 - **Files**:
   - `npz_file`: The NPZ file containing vector paths.
   - `json_file`: A JSON file containing color settings.
@@ -344,7 +369,13 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap"   -F "
 #### Example CURL (standard-npz-points2d-lap)
 
 ```bash
-curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F "pass_code=my-pass-code"   -F "device_id=AE356O3E89D"   -F "npz_file=@path/to/your/file.npz"   -F "json_file=@path/to/your/color_settings.json"   --output generated_file.lap
+curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap" \
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "npz_file=@path/to/your/file.npz" \
+  -F "json_file=@path/to/your/color_settings.json" \
+  --output generated_file.lap
 ```
 
 ### Process GVDesign Job
@@ -360,6 +391,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `workspaceX_mm_min` (float, optional): Workspace X min in millimeters to position the file in the workspace correctly.
   - `workspaceX_mm_max` (float, optional): Workspace X max in millimeters to position the file in the workspace correctly.
   - `workspaceY_mm_min` (float, optional): Workspace Y min in millimeters to position the file in the workspace correctly.
@@ -374,6 +406,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap"   -F 
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -396,6 +429,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap" \
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `workspaceX_mm_min` (float, optional): Workspace X min in millimeters to position the file in the workspace correctly.
   - `workspaceX_mm_max` (float, optional): Workspace X max in millimeters to position the file in the workspace correctly.
   - `workspaceY_mm_min` (float, optional): Workspace Y min in millimeters to position the file in the workspace correctly.
@@ -410,6 +444,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -436,6 +471,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap" \
 - **Form Fields**:
   - `pass_code` (str): User pass code for authentication obtained from the API website under username.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
 - **Files**:
   - `lap_file`: The `.lap` file to execute.
 
@@ -445,6 +481,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "lap_file=@path/to/your/job.lap"
 ```
 
@@ -461,13 +498,15 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
 
 #### Example CURL (api-stop-job)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
   -F "pass_code=my-pass-code" \
-  -F "device_id=AE356O3E89D"
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
 ```
 
 ### Query Job Status
@@ -483,13 +522,15 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
 
 #### Example CURL (api-query-job-status)
 
 ```bash
 curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
   -F "pass_code=my-pass-code" \
-  -F "device_id=AE356O3E89D"
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
 ```
 
 ### Capture Image
@@ -506,6 +547,7 @@ The request should be `multipart/form-data` and include the following fields:
 
 - `device_id` (string, required): The id (MAC address) for the device.
 - `pass_code` (string, required): The user's pass code.
+- `device_auth_code` (string, required): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
 - `is_corrected` (boolean, optional): Specifies whether the captured image should be corrected. If `true`, the corrected image is returned. Otherwise, the original image is returned. Defaults to `false` if not specified.
 
 **Responses:**
@@ -539,6 +581,7 @@ The request should be `multipart/form-data` and include the following fields:
 curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
      -F "pass_code=your_pass_code" \
      -F "device_id=your_device_id" \
+     -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
      -F "is_corrected=true" \
      --output captured_image.jpg
 ```
@@ -558,6 +601,7 @@ curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `x_mm` (float, optional): X position in millimeters. Can be `null` to skip moving along X.
   - `y_mm` (float, optional): Y position in millimeters. Can be `null` to skip moving along Y.
   - `z_mm` (float, optional): Z position in millimeters. Can be `null` to skip moving along Z.
@@ -570,10 +614,12 @@ This endpoint allows you to move the gantry of a device to a specific position. 
 
 ```sh
 curl -X POST "https://your-server/api/jobs/gantry-move" \
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "x_mm=100.0" \
   -F "y_mm=50.0" \
   -F "z_mm=" \
-  -F "device_id=AE356O3E89D"
 ```
 
 ### Success Response
@@ -615,14 +661,17 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `gpio_pin` (int): The pin to set.
 
 #### Example cURL (set-gpio)
 
 ```sh
 curl -X POST "https://beta.fslaser.com/api/jobs/set-gpio" \
-  -F "gpio_pin=1" \
-  -F "device_id=AE356O3E89D"
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "gpio_pin=1"
 ```
 
 **Success Response**:
@@ -645,14 +694,17 @@ curl -X POST "https://beta.fslaser.com/api/jobs/set-gpio" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `gpio_pin` (int): The pin to clear.
 
 #### Example CURL (clear-gpio)
 
 ```sh
 curl -X POST "https://beta.fslaser.com/api/jobs/clear-gpio" \
-  -F "gpio_pin=1" \
-  -F "device_id=AE356O3E89D"
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "gpio_pin=1"
 ```
 
 **Success Response**:
@@ -675,14 +727,17 @@ curl -X POST "https://beta.fslaser.com/api/jobs/clear-gpio" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `gpio_pin` (int): The pin to get.
 
 #### Example CURL (get-gpio)
 
 ```sh
 curl -X POST "https://beta.fslaser.com/api/jobs/get-gpio" \
-  -F "gpio_pin=1" \
-  -F "device_id=AE356O3E89D"
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "gpio_pin=1"
 ```
 
 **Success Response**:
@@ -712,6 +767,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/get-gpio" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `gpio_pin` (int): The pin to set.
   - `blink_duration_ms` (int, optional): The duration of the blink in milliseconds. Default is 1000, if not specified.
 
@@ -719,9 +775,11 @@ curl -X POST "https://beta.fslaser.com/api/jobs/get-gpio" \
 
 ```sh
 curl -X POST "https://beta.fslaser.com/api/jobs/blink-gpio" \
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
   -F "gpio_pin=1" \
-  -F "blink_duration_ms=250" \
-  -F "device_id=AE356O3E89D"
+  -F "blink_duration_ms=250"
 ```
 
 **Success Response**:
@@ -744,14 +802,17 @@ curl -X POST "https://beta.fslaser.com/api/jobs/blink-gpio" \
 - **Form Fields**:
   - `pass_code` (str): The user's pass code obtained from RE4.
   - `device_id` (str): Device ID for authentication.
+  - `device_auth_code` (str): Device authentication code obtained from `http://{device_ip}/2fa` endpoint.
   - `gpio_command` (str): The command to send.
 
 #### Example cURL (send-gpio)
 
 ```sh
 curl -X POST "https://beta.fslaser.com/api/jobs/send-gpio" \
-  -F "gpio_command=set pin1" \
-  -F "device_id=AE356O3E89D"
+  -F "pass_code=my-pass-code" \
+  -F "device_id=AE356O3E89D" \
+  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "gpio_command=set pin1"
 ```
 
 **Success Response**:
