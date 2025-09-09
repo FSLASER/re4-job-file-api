@@ -17,7 +17,11 @@ def test_gantry_move(server, pass_code, device_id, device_ip, x_mm=None, y_mm=No
         url = server + "/api/jobs/gantry-move"
 
         # get the device auth code from the {device_ip}/2fa
-        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
+        # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+        totp_response = requests.post(f"https://{device_ip}/2fa", verify=False).json()
+        if not totp_response.get("success"):
+            raise Exception(f"Failed to get TOTP: {totp_response}")
+        device_auth_code = totp_response["totp"]["totp"]
         # Prepare the data for the POST request
         data = {
             "pass_code": pass_code,

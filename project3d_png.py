@@ -19,7 +19,11 @@ def test_get_project3d_png_lap(server, pass_code, device_id, device_ip, png_file
         url = f"{server}/api/jobs/project3d-png-lap"
 
         # get the device auth code from the {device_ip}/2fa
-        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
+        # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+        totp_response = requests.post(f"https://{device_ip}/2fa", verify=False).json()
+        if not totp_response.get("success"):
+            raise Exception(f"Failed to get TOTP: {totp_response}")
+        device_auth_code = totp_response["totp"]["totp"]
         # Open the files to upload
         with open(png_file_path, "rb") as png_file, open(json_file_path, "rb") as json_file, open(mesh_file_path, "rb") as mesh_file:
             # Prepare the data and files for the POST request

@@ -19,7 +19,11 @@ def test_capture_image(is_corrected_value=None, output_filename="captured_image.
     endpoint = f"{BASE_URL}/capture-image"
     
     # get the device auth code from the {device_ip}/2fa
-    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
+    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
+    if not totp_response.get("success"):
+        raise Exception(f"Failed to get TOTP: {totp_response}")
+    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,

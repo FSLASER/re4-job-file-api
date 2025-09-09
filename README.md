@@ -51,9 +51,23 @@ The **Re4 Job File API** provides endpoints to process job files, including vect
   - The device must be connected to the website
   - The generated `.lap` file will only work with the correct device
 - **Device Auth Code**: Required for most API endpoints (except `get-workspace-bounds`). This is a time-based one-time password (TOTP) that must be fetched from the device's `/2fa` endpoint.
-  - Obtained by making a GET request to `http://{device_ip}/2fa` 
-  - The response contains a JSON object with a `totp` field containing the auth code
+  - **Network Requirement**: The TOTP endpoint requires direct network access to the device's IP address. Clients must be on the same local network as the device or have VPN/routing access to reach the device's subnet.
+  - Obtained by making a POST request to `https://{device_ip}/2fa` or `http://{device_ip}/2fa`
+  - **Note**: Both HTTP and HTTPS work, but HTTPS requires SSL verification to be disabled (`verify=False` in Python, `-k` flag in curl)
+  - The response contains a JSON object with a `success` field and nested `totp` object containing the auth code
+  - Access the auth code via `response["totp"]["totp"]` after checking `response["success"]`
   - This code changes periodically and must be fetched fresh for each API call
+  - **Example TOTP Response**:
+    ```json
+    {
+      "success": true,
+      "totp": {
+        "totp": "565244",
+        "expire_time": 1757444100,
+        "expire_time_str": "2025-09-09 11:55:00"
+      }
+    }
+    ```
 
 ### File Requirements
 
@@ -144,7 +158,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/get-workspace-bounds" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -185,7 +199,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-svg-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -229,7 +243,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/project3d-svg-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-png-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "png_file=@path/to/your/image.png" \
   -F "json_file=@path/to/your/color_settings.json" \
   -F "transform_params=[0.1, 0, 0, 0.1, 20.0, 15.25]" \
@@ -341,7 +355,7 @@ The API assumes all input images are at 96 DPI (dots per inch) when converting t
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "npz_file=@path/to/your/file.npz" \
   -F "json_file=@path/to/your/color_settings.json" \
   -F "color=#FF5733" \
@@ -372,7 +386,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-paths2d-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "npz_file=@path/to/your/file.npz" \
   -F "json_file=@path/to/your/color_settings.json" \
   --output generated_file.lap
@@ -406,7 +420,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-npz-points2d-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -444,7 +458,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-gvdesign-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "workspaceX_mm_min=-50.0" \
   -F "workspaceX_mm_max=50.0" \
   -F "workspaceY_mm_min=-50.0" \
@@ -481,7 +495,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/standard-pdf-lap" \
 curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "lap_file=@path/to/your/job.lap"
 ```
 
@@ -506,7 +520,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-run-lap-job" \
 curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
 ```
 
 ### Query Job Status
@@ -530,7 +544,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/api-stop-job" \
 curl -X POST "https://beta.fslaser.com/api/jobs/api-query-job-status" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
 ```
 
 ### Capture Image
@@ -581,7 +595,7 @@ The request should be `multipart/form-data` and include the following fields:
 curl -X POST "YOUR_SERVER_URL/api/jobs/capture-image" \
      -F "pass_code=your_pass_code" \
      -F "device_id=your_device_id" \
-     -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+     -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
      -F "is_corrected=true" \
      --output captured_image.jpg
 ```
@@ -616,7 +630,7 @@ This endpoint allows you to move the gantry of a device to a specific position. 
 curl -X POST "https://your-server/api/jobs/gantry-move" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "x_mm=100.0" \
   -F "y_mm=50.0" \
   -F "z_mm=" \
@@ -670,7 +684,7 @@ curl -X POST "https://your-server/api/jobs/gantry-move" \
 curl -X POST "https://beta.fslaser.com/api/jobs/set-gpio" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "gpio_pin=1"
 ```
 
@@ -703,7 +717,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/set-gpio" \
 curl -X POST "https://beta.fslaser.com/api/jobs/clear-gpio" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "gpio_pin=1"
 ```
 
@@ -736,7 +750,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/clear-gpio" \
 curl -X POST "https://beta.fslaser.com/api/jobs/get-gpio" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "gpio_pin=1"
 ```
 
@@ -777,7 +791,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/get-gpio" \
 curl -X POST "https://beta.fslaser.com/api/jobs/blink-gpio" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "gpio_pin=1" \
   -F "blink_duration_ms=250"
 ```
@@ -811,7 +825,7 @@ curl -X POST "https://beta.fslaser.com/api/jobs/blink-gpio" \
 curl -X POST "https://beta.fslaser.com/api/jobs/send-gpio" \
   -F "pass_code=my-pass-code" \
   -F "device_id=AE356O3E89D" \
-  -F "device_auth_code=$(curl -s http://192.168.1.100/2fa | jq -r '.totp')" \
+  -F "device_auth_code=$(curl -s -k https://192.168.1.100/2fa | jq -r '.totp.totp')" \
   -F "gpio_command=set pin1"
 ```
 

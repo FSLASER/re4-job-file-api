@@ -18,7 +18,11 @@ def test_get_standard_paths2d_lap(server, pass_code, device_id, device_ip, npz_f
         url = f"{server}/api/jobs/standard-npz-paths2d-lap"  # Endpoint URL
 
         # get the device auth code from the {device_ip}/2fa
-        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
+        # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+        totp_response = requests.post(f"https://{device_ip}/2fa", verify=False).json()
+        if not totp_response.get("success"):
+            raise Exception(f"Failed to get TOTP: {totp_response}")
+        device_auth_code = totp_response["totp"]["totp"]
         # Open the files to upload
         with open(npz_file_path, "rb") as npz_file, open(json_file_path, "rb") as json_file:
             # Prepare the request data

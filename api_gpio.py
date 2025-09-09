@@ -17,7 +17,11 @@ def test_set_gpio(gpio_pin: int):
     endpoint = f"{BASE_URL}/set-gpio"
     
     # get the device auth code from the {device_ip}/2fa
-    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
+    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
+    if not totp_response.get("success"):
+        raise Exception(f"Failed to get TOTP: {totp_response}")
+    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
@@ -65,7 +69,11 @@ def test_clear_gpio(gpio_pin: int):
     endpoint = f"{BASE_URL}/clear-gpio"
     
     # get the device auth code from the {device_ip}/2fa
-    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
+    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
+    if not totp_response.get("success"):
+        raise Exception(f"Failed to get TOTP: {totp_response}")
+    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
@@ -113,7 +121,11 @@ def test_get_gpio(gpio_pin: int):
     endpoint = f"{BASE_URL}/get-gpio"
     
     # get the device auth code from the {device_ip}/2fa
-    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
+    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
+    if not totp_response.get("success"):
+        raise Exception(f"Failed to get TOTP: {totp_response}")
+    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
@@ -169,7 +181,11 @@ def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None):
     endpoint = f"{BASE_URL}/blink-gpio"
     
     # get the device auth code from the {device_ip}/2fa
-    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
+    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
+    if not totp_response.get("success"):
+        raise Exception(f"Failed to get TOTP: {totp_response}")
+    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
@@ -221,7 +237,11 @@ def test_send_gpio(gpio_command: str):
     endpoint = f"{BASE_URL}/send-gpio"
     
     # get the device auth code from the {device_ip}/2fa
-    device_auth_code = requests.get(f"http://{DEVICE_IP}/2fa").json()["totp"]
+    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
+    if not totp_response.get("success"):
+        raise Exception(f"Failed to get TOTP: {totp_response}")
+    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,

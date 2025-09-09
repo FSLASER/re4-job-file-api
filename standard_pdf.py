@@ -17,7 +17,11 @@ def test_get_pdf_lap(server, pass_code, device_id, device_ip, pdf_file_path, jso
         url = server + "/api/jobs/standard-pdf-lap"
 
         # get the device auth code from the {device_ip}/2fa
-        device_auth_code = requests.get(f"http://{device_ip}/2fa").json()["totp"]
+        # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
+        totp_response = requests.post(f"https://{device_ip}/2fa", verify=False).json()
+        if not totp_response.get("success"):
+            raise Exception(f"Failed to get TOTP: {totp_response}")
+        device_auth_code = totp_response["totp"]["totp"]
         # Open the files to upload
         with open(pdf_file_path, "rb") as pdf_file, open(json_file_path, "rb") as json_file:
             # Prepare the data and files for the POST request
