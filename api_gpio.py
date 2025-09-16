@@ -4,10 +4,9 @@ import requests
 BASE_URL = "https://beta.fslaser.com/api/jobs"  # Replace with your actual server URL
 DEVICE_ID = "AE356O3E89D"  # Replace with a valid device ID
 PASS_CODE = "Pork_Hacking_98"  # Replace with a valid pass code
-DEVICE_IP = "192.168.1.100"  # Replace with a valid device IP address
 # --- End Configuration ---
 
-def test_set_gpio(gpio_pin: int):
+def test_set_gpio(gpio_pin: int, auth_code=None):
     """
     Tests the /api/jobs/set-gpio endpoint.
 
@@ -16,17 +15,14 @@ def test_set_gpio(gpio_pin: int):
     """
     endpoint = f"{BASE_URL}/set-gpio"
     
-    # get the device auth code from the {device_ip}/2fa
-    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
-    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
-    if not totp_response.get("success"):
-        raise Exception(f"Failed to get TOTP: {totp_response}")
-    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
-        "device_auth_code": device_auth_code,
     }
+    
+    # Only include auth_code if provided
+    if auth_code:
+        form_data["device_auth_code"] = auth_code
 
     if gpio_pin is not None:
         form_data["gpio_pin"] = int(gpio_pin) # FastAPI expects an integer for the GPIO pin
@@ -59,7 +55,7 @@ def test_set_gpio(gpio_pin: int):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-def test_clear_gpio(gpio_pin: int):
+def test_clear_gpio(gpio_pin: int, auth_code=None):
     """
     Tests the /api/jobs/clear-gpio endpoint.
 
@@ -68,17 +64,14 @@ def test_clear_gpio(gpio_pin: int):
     """
     endpoint = f"{BASE_URL}/clear-gpio"
     
-    # get the device auth code from the {device_ip}/2fa
-    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
-    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
-    if not totp_response.get("success"):
-        raise Exception(f"Failed to get TOTP: {totp_response}")
-    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
-        "device_auth_code": device_auth_code,
     }
+    
+    # Only include auth_code if provided
+    if auth_code:
+        form_data["device_auth_code"] = auth_code
 
     if gpio_pin is not None:
         form_data["gpio_pin"] = int(gpio_pin) # FastAPI expects an integer for the GPIO pin
@@ -111,7 +104,7 @@ def test_clear_gpio(gpio_pin: int):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-def test_get_gpio(gpio_pin: int):
+def test_get_gpio(gpio_pin: int, auth_code=None):
     """
     Test the /api/jobs/get-gpio endpoint.
 
@@ -120,17 +113,14 @@ def test_get_gpio(gpio_pin: int):
     """
     endpoint = f"{BASE_URL}/get-gpio"
     
-    # get the device auth code from the {device_ip}/2fa
-    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
-    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
-    if not totp_response.get("success"):
-        raise Exception(f"Failed to get TOTP: {totp_response}")
-    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
-        "device_auth_code": device_auth_code,
     }
+    
+    # Only include auth_code if provided
+    if auth_code:
+        form_data["device_auth_code"] = auth_code
 
     if gpio_pin is not None:
         form_data["gpio_pin"] = int(gpio_pin) # FastAPI expects an integer for the GPIO pin
@@ -169,7 +159,7 @@ def test_get_gpio(gpio_pin: int):
     except Exception as e:
         print(f"An error occurred: {e}")
 
-def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None):
+def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None, auth_code=None):
     """
     Tests the /api/jobs/blink-gpio endpoint.
 
@@ -180,17 +170,14 @@ def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None):
     """
     endpoint = f"{BASE_URL}/blink-gpio"
     
-    # get the device auth code from the {device_ip}/2fa
-    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
-    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
-    if not totp_response.get("success"):
-        raise Exception(f"Failed to get TOTP: {totp_response}")
-    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
-        "device_auth_code": device_auth_code,
     }
+    
+    # Only include auth_code if provided
+    if auth_code:
+        form_data["device_auth_code"] = auth_code
 
     if gpio_pin is not None:
         form_data["gpio_pin"] = int(gpio_pin) # FastAPI expects an integer for the GPIO pin
@@ -227,7 +214,7 @@ def test_blink_gpio(gpio_pin: int, blink_duration_ms: int | None = None):
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
 
-def test_send_gpio(gpio_command: str):
+def test_send_gpio(gpio_command: str, auth_code=None):
     """
     Tests the /api/jobs/send-gpio endpoint.
 
@@ -236,17 +223,14 @@ def test_send_gpio(gpio_command: str):
     """
     endpoint = f"{BASE_URL}/send-gpio"
     
-    # get the device auth code from the {device_ip}/2fa
-    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
-    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
-    if not totp_response.get("success"):
-        raise Exception(f"Failed to get TOTP: {totp_response}")
-    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
-        "device_auth_code": device_auth_code,
     }
+    
+    # Only include auth_code if provided
+    if auth_code:
+        form_data["device_auth_code"] = auth_code
 
     if gpio_command is not None:
         form_data["gpio_command"] = gpio_command # FastAPI expects a string for the GPIO command
@@ -280,8 +264,10 @@ def test_send_gpio(gpio_command: str):
         print(f"An unexpected error occurred: {e}")
 
 if __name__ == "__main__":
+    # Option 1: Same network - no auth code needed
+    print("Testing without auth code (same network)...")
+    
     # --- Test Cases ---
-
     # 1. Test with set_gpio with gpio_pin = 1
     test_set_gpio(gpio_pin=1)
 
@@ -317,6 +303,19 @@ if __name__ == "__main__":
 
     # 12. Test with send_gpio with gpio_command = "clear pin1"
     test_send_gpio(gpio_command="clear pin1")
+    
+    # Option 2: Using TOTP auth code (uncomment if needed)
+    # from auth_code_grabber import get_device_auth_code
+    # print("Testing with auth code (TOTP)...")
+    # try:
+    #     device_ip = "192.168.1.100"  # Define device IP only when using TOTP
+    #     auth_code = get_device_auth_code(device_ip)
+    #     print("Testing GPIO operations with TOTP...")
+    #     test_set_gpio(gpio_pin=1, auth_code=auth_code)
+    #     test_clear_gpio(gpio_pin=1, auth_code=auth_code)
+    #     test_get_gpio(gpio_pin=1, auth_code=auth_code)
+    # except Exception as e:
+    #     print(f"Could not use TOTP authentication: {e}")
 
     print("\n--- All tests finished ---")
     

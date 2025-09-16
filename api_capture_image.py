@@ -5,30 +5,27 @@ import shutil
 BASE_URL = "https://beta.fslaser.com/api/jobs"  # Replace with your actual server URL
 DEVICE_ID = "AE356O3E89D"  # Replace with a valid device ID
 PASS_CODE = "Pork_Hacking_98"  # Replace with a valid pass code
-DEVICE_IP = "192.168.1.100"  # Replace with a valid device IP address
 # --- End Configuration ---
 
-def test_capture_image(is_corrected_value=None, output_filename="captured_image.jpg"):
+def test_capture_image(is_corrected_value=None, output_filename="captured_image.jpg", auth_code=None):
     """
     Tests the /api/jobs/capture-image endpoint.
 
     Args:
         is_corrected_value (bool, optional): Whether the captured image is corrected using calibrated homography data.
         output_filename (str): Name of the file to save the captured image.
+        auth_code (str, optional): Device authentication code. If not provided, will be omitted (for same-network requests).
     """
     endpoint = f"{BASE_URL}/capture-image"
     
-    # get the device auth code from the {device_ip}/2fa
-    # Note: Both HTTP and HTTPS work, but HTTPS requires verify=False to disable SSL verification
-    totp_response = requests.post(f"https://{DEVICE_IP}/2fa", verify=False).json()
-    if not totp_response.get("success"):
-        raise Exception(f"Failed to get TOTP: {totp_response}")
-    device_auth_code = totp_response["totp"]["totp"]
     form_data = {
         "device_id": DEVICE_ID,
         "pass_code": PASS_CODE,
-        "device_auth_code": device_auth_code,
     }
+    
+    # Only include auth_code if provided
+    if auth_code:
+        form_data["device_auth_code"] = auth_code
 
     if is_corrected_value is not None:
         form_data["is_corrected"] = str(is_corrected_value).lower() # FastAPI expects 'true' or 'false' for bools in Form
@@ -66,15 +63,22 @@ def test_capture_image(is_corrected_value=None, output_filename="captured_image.
 
 if __name__ == "__main__":
     # --- Test Cases ---
-
-    # 1. Test with is_corrected explicitly set to True
+    
+    # Option 1: Same network - no auth code needed
+    print("Testing without auth code (same network)...")
     test_capture_image(is_corrected_value=True, output_filename="captured_image_corrected.jpg")
-
-    # 2. Test with is_corrected explicitly set to False
     test_capture_image(is_corrected_value=False, output_filename="captured_image_uncorrected.jpg")
-
-    # 3. Test with is_corrected not provided (should default to False on the server)
     test_capture_image(output_filename="captured_image_default.jpg")
+    
+    # Option 2: Using TOTP auth code (uncomment if needed)
+    # from auth_code_grabber import get_device_auth_code
+    # print("Testing with auth code (TOTP)...")
+    # try:
+    #     device_ip = "192.168.1.100"  # Define device IP only when using TOTP
+    #     auth_code = get_device_auth_code(device_ip)
+    #     test_capture_image(is_corrected_value=True, output_filename="captured_image_corrected_with_totp.jpg", auth_code=auth_code)
+    # except Exception as e:
+    #     print(f"Could not use TOTP authentication: {e}")
 
     print("\n--- All tests finished ---")
     
