@@ -1,13 +1,14 @@
 import requests
 
-def test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_limit_check):
+def test_run_lap_job(server, pass_code, device_id, lap_file_path, soft_limit_check, device_totp_code=None):
     """
     Test the api-run-lap-job endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
+        device_totp_code (str, optional): Device authentication code. If not provided, will be omitted (for same-network requests).
     """
     try:
         url = server + "/api/jobs/api-run-lap-job"
@@ -15,9 +16,13 @@ def test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_
         # Prepare the data and files for the POST request
         data = {
             "pass_code": pass_code,
-            "device_access_code": device_access_code,
+            "device_id": device_id,
             "soft_limit_check": soft_limit_check,
         }
+        
+        # Only include device_totp_code if provided
+        if device_totp_code:
+            data["device_auth_code"] = device_totp_code
         
         # Open and prepare the LAP file
         files = {
@@ -41,7 +46,20 @@ def test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
+    device_id = "AE356O3E89D" #Device ID for device authentication.
     lap_file_path = "C:/Users/Administrator/Desktop/test.lap" #Path to the LAP file to be uploaded
     soft_limit_check = True
-    test_run_lap_job(server, pass_code, device_access_code, lap_file_path, soft_limit_check)
+    
+    # Option 1: Same network - no auth code needed
+    print("Testing without auth code (same network)...")
+    test_run_lap_job(server, pass_code, device_id, lap_file_path, soft_limit_check)
+    
+    # Option 2: Using TOTP auth code (uncomment if needed)
+    # from auth_code_grabber import get_device_auth_code
+    # print("Testing with auth code (TOTP)...")
+    # try:
+    #     device_ip = "192.168.1.100"  # Define device IP only when using TOTP
+    #     device_totp_code = get_device_auth_code(device_ip)
+    #     test_run_lap_job(server, pass_code, device_id, lap_file_path, soft_limit_check, device_totp_code=device_totp_code)
+    # except Exception as e:
+    #     print(f"Could not use TOTP authentication: {e}")

@@ -1,13 +1,13 @@
 import requests
 
-def test_get_workspace_bounds(server, device_access_code):
+def test_get_workspace_bounds(server, device_id):
     """
     Test the standard-svg-lap endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
     """
     try:
         url = server + "/api/jobs/get-workspace-bounds"
@@ -15,7 +15,7 @@ def test_get_workspace_bounds(server, device_access_code):
         # Open the files to upload
         # Prepare the data and files for the POST request
         data = {
-            "device_access_code": device_access_code,
+            "device_id": device_id,
         }
         # Send the POST request
         print(f"Sending request to {url}...")
@@ -29,5 +29,5 @@ def test_get_workspace_bounds(server, device_access_code):
 
 if __name__ == "__main__":
     server = "http://localhost:5005"  # Replace with your server URL
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
-    test_get_workspace_bounds(server, device_access_code)
+    device_id = "AE356O3E89D" #Device ID for device authentication.
+    test_get_workspace_bounds(server, device_id)

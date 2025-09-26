@@ -1,13 +1,14 @@
 import requests
 
-def test_gantry_move(server, pass_code, device_access_code, x_mm=None, y_mm=None, z_mm=None):
+def test_gantry_move(server, pass_code, device_id, x_mm=None, y_mm=None, z_mm=None, device_totp_code=None):
     """
     Test the gantry-move endpoint.
 
     Args:
         server (str): The server URL.
         pass_code (str): Pass code for authentication.
-        device_access_code (str): Device access code for authentication.
+        device_id (str): Device ID for authentication.
+        device_totp_code (str, optional): Device authentication code. If not provided, will be omitted (for same-network requests).
         x_mm (float, optional): X position in millimeters. Default is None (do not move X).
         y_mm (float, optional): Y position in millimeters. Default is None (do not move Y).
         z_mm (float, optional): Z position in millimeters. Default is None (do not move Z).
@@ -18,8 +19,12 @@ def test_gantry_move(server, pass_code, device_access_code, x_mm=None, y_mm=None
         # Prepare the data for the POST request
         data = {
             "pass_code": pass_code,
-            "device_access_code": device_access_code,
+            "device_id": device_id,
         }
+        
+        # Only include device_totp_code if provided
+        if device_totp_code:
+            data["device_auth_code"] = device_totp_code
         if x_mm is not None:
             data["x_mm"] = str(x_mm)
         if y_mm is not None:
@@ -43,20 +48,31 @@ def test_gantry_move(server, pass_code, device_access_code, x_mm=None, y_mm=None
 if __name__ == "__main__":
     server = "https://beta.fslaser.com"  # Replace with your server URL
     pass_code = "Pork_Hacking_98" #Pass code for authentication. -> get the user passcode from the website
-    device_access_code = "Chastity:Lasso:87" #Device access code for device authentication. -> get the device access code from the device touchscreen
-
-    # Example test cases
+    device_id = "AE356O3E89D" #Device ID for device authentication.
+    # Option 1: Same network - no auth code needed
+    print("Testing without auth code (same network)...")
     print("\n--- Move X only ---")
-    test_gantry_move(server, pass_code, device_access_code, x_mm=100.0)
+    test_gantry_move(server, pass_code, device_id, x_mm=100.0)
 
     print("\n--- Move Y only ---")
-    test_gantry_move(server, pass_code, device_access_code, y_mm=50.0)
+    test_gantry_move(server, pass_code, device_id, y_mm=50.0)
 
     print("\n--- Move X and Y ---")
-    test_gantry_move(server, pass_code, device_access_code, x_mm=100.0, y_mm=50.0)
+    test_gantry_move(server, pass_code, device_id, x_mm=100.0, y_mm=50.0)
 
     print("\n--- Move all axes ---")
-    test_gantry_move(server, pass_code, device_access_code, x_mm=100.0, y_mm=50.0, z_mm=10.0)
+    test_gantry_move(server, pass_code, device_id, x_mm=100.0, y_mm=50.0, z_mm=10.0)
 
     print("\n--- No axes (should fail) ---")
-    test_gantry_move(server, pass_code, device_access_code)
+    test_gantry_move(server, pass_code, device_id)
+    
+    # Option 2: Using TOTP auth code (uncomment if needed)
+    # from auth_code_grabber import get_device_auth_code
+    # print("Testing with auth code (TOTP)...")
+    # try:
+    #     device_ip = "192.168.1.100"  # Define device IP only when using TOTP
+    #     device_totp_code = get_device_auth_code(device_ip)
+    #     print("\n--- Move X only (with TOTP) ---")
+    #     test_gantry_move(server, pass_code, device_id, x_mm=100.0, device_totp_code=device_totp_code)
+    # except Exception as e:
+    #     print(f"Could not use TOTP authentication: {e}")
