@@ -11,6 +11,23 @@ The API is served by the RE5 server — default **`https://re5.fslaser.com`**
 > This repo was historically called *re4-job-file-api*; the same endpoints
 > now live on the RE5 servers and this client targets those.
 
+## Using re5.fslaser.com (RE5)
+
+The production RE5 server. To get set up:
+
+1. **Account** — sign up / log in at <https://re5.fslaser.com>.
+2. **Pass code** — shown under your username on the site. Pass codes are
+   per-site: your re5 pass code is different from beta/alpha.
+3. **Device** — add your machine to your account on the site and power it on
+   so it connects. Its id (MAC) from the device list is your `device_id`.
+   No machine yet? Every account gets a **demo device** (`Demo_UV_Laser`) —
+   all LAP-generation endpoints work against it, so you can integrate and
+   test the full file→LAP flow before hardware arrives.
+4. **Design source** — for anything beyond a simple single-color file,
+   design in the RE5 editor, save the project, and submit the `.fsl5` to
+   `standard-fsl5-lap`: it runs exactly what the editor shows, including
+   per-color settings embedded in the project.
+
 ## Quick start
 
 ```bash
@@ -54,20 +71,26 @@ Every endpoint (except `get-workspace-bounds`) needs:
 |---|---|
 | `pass_code` | Log into the website (e.g. re5.fslaser.com); it's shown under your username. Pass codes are **per-site** — a beta pass code won't work on re5. |
 | `device_id` | Your machine's id from the website's device list. The device must be added to your account **and currently connected** to that site. |
-| `device_auth_code` | **Optional.** Only needed when the API caller is on a *different network* than the device. |
+| `device_auth_code` | **Required when calling from a different network than the device** (6-digit TOTP). Omit it when your client is on the device's own LAN. Not needed for demo devices. |
 
-**Same network (recommended):** if your client is on the same LAN as the
-device, omit `device_auth_code` entirely — the server detects the shared
-network and skips TOTP.
+**Same network (simplest):** if your client is on the same LAN as the
+device, omit `device_auth_code` entirely — the shared network is treated as
+proof of proximity.
 
-**Different network:** fetch a TOTP from the device itself (requires LAN/VPN
-access to the device at least once per code):
+**Different network:** a fresh 6-digit device auth code is **required** (it
+is the possession factor — a leaked pass code alone can't drive your machine
+remotely). The code is shown on the device screen, or fetch it from the
+device over LAN/VPN:
 
 ```bash
 curl -s -k https://DEVICE_IP/2fa | jq -r '.totp.totp'    # valid ~5 minutes
 # or: python3 fsl_api.py totp --device-ip DEVICE_IP
 # or pass --totp auto to any CLI command (uses FSL_DEVICE_IP)
 ```
+
+**Demo devices** (see [Testing without hardware](#testing-without-hardware))
+never need a `device_auth_code` — they have no screen and no network, and
+their LAPs can't run on real hardware.
 
 ## The settings JSON
 
