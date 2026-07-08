@@ -16,14 +16,12 @@ The API is served by the RE5 server — default **`https://re5.fslaser.com`**
 The production RE5 server. To get set up:
 
 1. **Account** — sign up / log in at <https://re5.fslaser.com>.
-2. **Pass code** — shown under your username on the site. Pass codes are
-   per-site: your re5 pass code is different from beta/alpha.
-3. **Device** — add your machine to your account on the site and power it on
+2. **Device** — add your machine to your account on the site and power it on
    so it connects. Its id (MAC) from the device list is your `device_id`.
    No machine yet? Every account gets a **demo device** (`Demo_UV_Laser`) —
    all LAP-generation endpoints work against it, so you can integrate and
    test the full file→LAP flow before hardware arrives.
-4. **Design source** — for anything beyond a simple single-color file,
+3. **Design source** — for anything beyond a simple single-color file,
    design in the RE5 editor, save the project, and submit the `.fsl5` to
    `standard-fsl5-lap`: it runs exactly what the editor shows, including
    per-color settings embedded in the project.
@@ -35,8 +33,8 @@ git clone https://github.com/FSLASER/re4-job-file-api.git
 cd re4-job-file-api
 pip install -r requirements.txt
 
-export FSL_PASS_CODE="your-pass-code"   # shown under your username on the website
 export FSL_DEVICE_ID="AABBCCDDEEFF"     # your device id from the device list
+# run from the machine's network (or use FSL_DEVICE_ID=Demo_UV_Laser from anywhere)
 # export FSL_SERVER="https://re5.fslaser.com"   # default
 
 # 1) design file + settings -> .lap
@@ -54,7 +52,7 @@ python3 fsl_api.py job design.svg -s color_settings.json
 ```python
 from fsl_api import FSLJobFileAPI
 
-api = FSLJobFileAPI(pass_code="...", device_id="...")   # or env vars
+api = FSLJobFileAPI(device_id="...")   # or env vars
 lap = api.file_to_lap("design.dxf", "color_settings.json")
 api.run_lap(lap)
 print(api.job_status())
@@ -63,34 +61,21 @@ print(api.job_status())
 Other CLI commands: `bounds`, `status`, `stop`, `capture`, `gantry`,
 `gpio`, `totp` — run `python3 fsl_api.py --help`.
 
-## Authentication
+## Authorization — machine-IP locality
 
-Every endpoint (except `get-workspace-bounds`) needs:
+**No accounts, no pass codes, no TOTP** (since 2026-07). The API authorizes
+by network locality: your client must be on the **same network as the target
+machine** (the server compares your external IP with the machine's reported
+IP). `device_id` just selects which machine when several share a network.
 
-| Credential | Where to get it |
+| You are… | What happens |
 |---|---|
-| `pass_code` | Log into the website (e.g. re5.fslaser.com); it's shown under your username. Pass codes are **per-site** — a beta pass code won't work on re5. |
-| `device_id` | Your machine's id from the website's device list. The device must be added to your account **and currently connected** to that site. |
-| `device_auth_code` | **Required when calling from a different network than the device** (6-digit TOTP). Omit it when your client is on the device's own LAN. Not needed for demo devices. |
+| On the machine's LAN | Full API access — just send `device_id` |
+| Elsewhere, real machine | `401` — API access is restricted to the machine's network |
+| Anywhere, **demo device** | Full LAP-generation access (`Demo_UV_Laser` bypasses locality; its LAPs can't run on hardware) |
 
-**Same network (simplest):** if your client is on the same LAN as the
-device, omit `device_auth_code` entirely — the shared network is treated as
-proof of proximity.
-
-**Different network:** a fresh 6-digit device auth code is **required** (it
-is the possession factor — a leaked pass code alone can't drive your machine
-remotely). The code is shown on the device screen, or fetch it from the
-device over LAN/VPN:
-
-```bash
-curl -s -k https://DEVICE_IP/2fa | jq -r '.totp.totp'    # valid ~5 minutes
-# or: python3 fsl_api.py totp --device-ip DEVICE_IP
-# or pass --totp auto to any CLI command (uses FSL_DEVICE_IP)
-```
-
-**Demo devices** (see [Testing without hardware](#testing-without-hardware))
-never need a `device_auth_code` — they have no screen and no network, and
-their LAPs can't run on real hardware.
+Legacy clients that still send `pass_code` / `device_auth_code` keep working —
+the fields are accepted and ignored.
 
 ## The settings JSON
 
@@ -150,9 +135,8 @@ including embedded per-color settings.
 ## Endpoint reference
 
 All endpoints are `POST` with `multipart/form-data` under
-`https://re5.fslaser.com/api/jobs/`. Auth form fields (`pass_code`,
-`device_id`, optional `device_auth_code`) are implied below — see
-[Authentication](#authentication).
+`https://re5.fslaser.com/api/jobs/`. The `device_id` form field is implied
+below — see [Authorization](#authorization--machine-ip-locality).
 
 ### LAP generation
 
@@ -171,7 +155,7 @@ on the `device_id` you passed.
 
 ```bash
 curl -X POST "https://re5.fslaser.com/api/jobs/standard-svg-lap" \
-  -F "pass_code=$FSL_PASS_CODE" -F "device_id=$FSL_DEVICE_ID" \
+  -F "device_id=$FSL_DEVICE_ID" \
   -F "workspaceX_mm_min=-50" -F "workspaceX_mm_max=50" \
   -F "workspaceY_mm_min=-50" -F "workspaceY_mm_max=50" \
   -F "svg_file=@design.svg" -F "json_file=@color_settings.json" \
@@ -207,7 +191,7 @@ counterparts plus `mesh_file` (`.obj`); wraps the design onto the 3D mesh.
 | `api-run-lap-job` | file `lap_file`, optional `soft_limit_check` (bool) | `{"message": "Job started successfully", ...}` — device must be **idle** and connected |
 | `api-stop-job` | — | stop result |
 | `api-query-job-status` | — | `{"user_job_status": "idle" \| "processing" \| ...}` |
-| `get-workspace-bounds` | only `device_id` (no pass_code) | `{"workspaceX_mm_min": -50.0, ...}` |
+| `get-workspace-bounds` | `device_id` | `{"workspaceX_mm_min": -50.0, ...}` |
 
 ### Device utilities
 
@@ -240,15 +224,12 @@ New integrations should use `fsl_api.py`.
 - **HTTP 405 on every endpoint** — the server is running a build with the
   deferred-router bug (routes shadowed by the static-file mount). Fixed in
   habanero `server/_main.py`; the server needs that version deployed.
-- **"Invalid pass_code"** — pass codes are per-site; get yours from the same
-  site you're calling.
-- **"User device association not found"** — add the device to your account
-  on the website.
+- **401 "restricted to clients on the same network"** — you're calling a
+  real machine from outside its network; run from the machine's LAN or use
+  the demo device.
 - **"Device not active"** — the machine must be powered on and connected to
   the site (`api-run-lap-job`, `capture-image`, etc. need a live device;
   LAP generation needs the device known + connected so the LAP can be signed).
-- **"Invalid device auth code"** — TOTP expired (5 min lifespan) or from the
-  wrong device. Same-network callers should omit it entirely.
 - **Job fails to start with a LAP from another machine** — LAPs are signed
   per-device; regenerate with the right `device_id`.
 

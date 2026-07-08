@@ -6,15 +6,20 @@ https://re5.fslaser.com). Core flow: upload a design file (svg / dxf / pdf /
 png / fsl5 / gvdesign / npz) + a settings JSON, receive a .lap job file,
 then run it on your machine.
 
+Authorization (2026-07, machine-IP locality): call from the SAME NETWORK as
+the machine — no pass codes, no TOTP. The demo device (Demo_UV_Laser)
+bypasses the locality check for hardware-free testing from anywhere.
+Legacy FSL_PASS_CODE / TOTP options are still accepted and simply ignored
+by current servers.
+
 Configuration (constructor args, CLI flags, or environment variables):
     FSL_SERVER      server URL           (default https://re5.fslaser.com)
-    FSL_PASS_CODE   user pass code       (shown under your username on the site)
     FSL_DEVICE_ID   device id            (device list on the site)
-    FSL_DEVICE_IP   device LAN IP        (only needed for TOTP when calling
-                                          from a different network)
+    FSL_PASS_CODE   legacy, ignored by current servers
+    FSL_DEVICE_IP   legacy TOTP helper target (ignored by current servers)
 
-Quick start (same LAN as the device — no TOTP needed):
-    export FSL_PASS_CODE=... FSL_DEVICE_ID=...
+Quick start (from the machine's LAN):
+    export FSL_DEVICE_ID=...
     python3 fsl_api.py lap design.svg -s color_settings.json -o design.lap
     python3 fsl_api.py run design.lap
     # or both in one step:
@@ -84,14 +89,15 @@ class FSLJobFileAPI:
         raise ApiError(f"Could not fetch TOTP from {self.device_ip}/2fa: {last_error}")
 
     def _auth_fields(self, need_pass_code=True):
+        # Machine-IP auth model: only device_id is required. pass_code and
+        # device_auth_code are legacy fields — sent if configured (harmless,
+        # ignored by current servers) so old server builds keep working.
         fields = {}
-        if need_pass_code:
-            if not self.pass_code:
-                raise ApiError("pass_code is required (set FSL_PASS_CODE or --pass-code)")
-            fields["pass_code"] = self.pass_code
         if not self.device_id:
             raise ApiError("device_id is required (set FSL_DEVICE_ID or --device-id)")
         fields["device_id"] = self.device_id
+        if self.pass_code:
+            fields["pass_code"] = self.pass_code
         code = self.device_auth_code
         if code == "auto":
             code = self.get_device_auth_code()
