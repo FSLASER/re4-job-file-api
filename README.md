@@ -196,6 +196,15 @@ counterparts plus `mesh_file` (`.obj`); wraps the design onto the 3D mesh.
 | `blink-gpio` | `gpio_pin`, optional `blink_duration_ms` (default 1000) | 200 |
 | `send-gpio` | `gpio_command` (str) | 200 |
 
+## Testing without hardware
+
+If your account has a **demo device** linked (e.g. `Demo_UV_Laser` — most
+accounts get one on signup), every LAP-generation endpoint works with it:
+use it as `device_id` and you can exercise the full file→LAP flow with no
+machine attached. Demo LAPs are signed with a placeholder key, so they can't
+run on real hardware, and `api-run-lap-job`/device-control endpoints still
+need a live machine.
+
 ## Legacy example scripts
 
 The original per-endpoint scripts (`standard_svg.py`, `standard_png.py`,
