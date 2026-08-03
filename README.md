@@ -11,6 +11,14 @@ The API is served by the RE5 server — default **`https://re5.fslaser.com`**
 > This repo was historically called *re4-job-file-api*; the same endpoints
 > now live on the RE5 servers and this client targets those.
 
+## Automation examples (`automation/`)
+
+Scripts for RE5's **Iteration Automation** — serialising, date codes, barcode
+scanning and pulling values from your own server, so every part gets a
+different value without editing the job. See [`automation/README.md`](automation/README.md).
+
+These work *with* the RE5 UI, where the rest of this repo drives jobs headlessly.
+
 ## Using re5.fslaser.com (RE5)
 
 The production RE5 server. To get set up:
